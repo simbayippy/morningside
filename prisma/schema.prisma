@@ -20,15 +20,12 @@ enum MembershipType {
 
 model User {
   id             String   @id @default(cuid())
-  name           String?
   email          String   @unique
-  image          String?
+  name           String?  // Keep name in User as it's used for auth/display
+  image          String?  // Keep image in User as it's used for auth/display
   isAdmin        Boolean  @default(false)
   isSuperAdmin   Boolean  @default(false)
   isVerified     Boolean  @default(false)
-  graduationYear Int?
-  major          String?
-  bio            String?  @db.Text
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   member         Member?
@@ -40,8 +37,8 @@ model User {
 
 model Member {
   id                String         @id @default(cuid())
-  userId           String         @unique
-  user             User           @relation(fields: [userId], references: [id])
+  userId           String?        @unique  // Optional but must be unique
+  user             User?          @relation(fields: [userId], references: [id])
   membershipType   MembershipType
   membershipFee    Decimal?
   transactionDate  DateTime?
@@ -53,6 +50,7 @@ model Member {
   preferredName    String?
   chineseName      String?
   gender           String
+  bio              String?        @db.Text
   
   // Academic Information
   class            Int            // Graduation year

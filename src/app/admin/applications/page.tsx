@@ -3,7 +3,7 @@
 import { api } from "@/trpc/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, X } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { formatDate } from "@/lib/utils";
@@ -181,7 +181,7 @@ export default function ApplicationsPage() {
                     </p>
                     <p>
                       <span className="font-medium">Email: </span>
-                      {application.user.email}
+                      {application.user!.email}
                     </p>
                   </div>
                 </div>

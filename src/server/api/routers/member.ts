@@ -6,10 +6,158 @@ import {
   adminProcedure,
 } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { Prisma } from "@prisma/client";
+import { Prisma, Member } from "@prisma/client";
 import { membershipFormSchema } from "@/lib/schemas/membership";
 
+// Profile update schema
+const updateProfileSchema = z.object({
+  englishName: z.string().optional().nullable(),
+  chineseName: z.string().optional().nullable(),
+  preferredName: z.string().optional().nullable(),
+  bio: z.string().optional().nullable(),
+  major: z.string().optional().nullable(),
+  class: z.number().optional().nullable(),
+  faculty: z.string().optional().nullable(),
+  industry: z.string().optional().nullable(),
+  employer: z.string().optional().nullable(),
+  position: z.string().optional().nullable(),
+});
+
+type MemberWithUser = Prisma.MemberGetPayload<{
+  include: {
+    user: {
+      select: {
+        id: true;
+        name: true;
+        email: true;
+        image: true;
+        isAdmin: true;
+        isSuperAdmin: true;
+        createdAt: true;
+      };
+    };
+  };
+}>;
+
 export const memberRouter = createTRPCRouter({
+  // Get current user's member profile
+  getMyProfile: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const member = await ctx.db.member.findUnique({
+        where: { userId: ctx.session.user.id },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              isAdmin: true,
+              isSuperAdmin: true,
+              createdAt: true,
+            },
+          },
+        },
+      });
+
+      if (!member) {
+        return null;
+      }
+
+      const { user, ...memberData } = member as MemberWithUser;
+      return {
+        ...memberData,
+        userId: user!.id,
+        name: user!.name,
+        email: user!.email,
+        image: user!.image,
+        isAdmin: user!.isAdmin,
+        isSuperAdmin: user!.isSuperAdmin,
+        createdAt: user!.createdAt,
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database error",
+          cause: error,
+        });
+      }
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch profile",
+      });
+    }
+  }),
+
+  // Update member profile
+  updateProfile: protectedProcedure
+    .input(updateProfileSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const member = await ctx.db.member.findUnique({
+          where: { userId: ctx.session.user.id },
+        });
+
+        if (!member) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Member profile not found",
+          });
+        }
+
+        // Create update data directly from input
+        const updateData: Prisma.MemberUpdateInput = Object.fromEntries(
+          Object.entries(input)
+            .filter(([_, value]) => value !== undefined)
+            .map(([key, value]) => [key, { set: value }]),
+        );
+
+        // Update the member profile
+        const updatedMember = await ctx.db.member.update({
+          where: { userId: ctx.session.user.id },
+          data: updateData,
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true,
+                isAdmin: true,
+                isSuperAdmin: true,
+                createdAt: true,
+              },
+            },
+          },
+        });
+
+        const { user, ...memberData } = updatedMember as MemberWithUser;
+        return {
+          ...memberData,
+          userId: user!.id,
+          name: user!.name,
+          email: user!.email,
+          image: user!.image,
+          isAdmin: user!.isAdmin,
+          isSuperAdmin: user!.isSuperAdmin,
+          createdAt: user!.createdAt,
+        };
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to update profile",
+            cause: error,
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred",
+        });
+      }
+    }),
+
   // Get current user's membership status
   getMyMembership: protectedProcedure.query(async ({ ctx }) => {
     try {
@@ -338,4 +486,40 @@ export const memberRouter = createTRPCRouter({
 
     return members;
   }),
+
+  // Update user image
+  updateUserImage: protectedProcedure
+    .input(
+      z.object({
+        image: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const updatedUser = await ctx.db.user.update({
+          where: { id: ctx.session.user.id },
+          data: {
+            image: input.image,
+          },
+          select: {
+            id: true,
+            image: true,
+          },
+        });
+
+        return updatedUser;
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to update image",
+            cause: error,
+          });
+        }
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred",
+        });
+      }
+    }),
 });

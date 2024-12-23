@@ -28,29 +28,13 @@ import { cn } from "@/lib/utils";
 import { FACULTIES } from "@/lib/constants/faculties";
 import { useEffect } from "react";
 import { FileUpload } from "@/components/ui/file-upload";
+import { INDUSTRY_OPTIONS } from "@/lib/constants/industries";
 
 interface MembershipFormProps {
   onSubmit: (values: MembershipFormValues) => Promise<void>;
   isSubmitting?: boolean;
   initialData?: MembershipFormValues;
 }
-
-// Add industry options
-const INDUSTRY_OPTIONS = [
-  "Technology",
-  "Finance",
-  "Healthcare",
-  "Education",
-  "Manufacturing",
-  "Retail",
-  "Real Estate",
-  "Consulting",
-  "Legal",
-  "Media",
-  "Non-profit",
-  "Government",
-  "Other",
-] as const;
 
 export function MembershipForm({
   onSubmit,

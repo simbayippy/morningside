@@ -30,8 +30,6 @@ export const userRouter = createTRPCRouter({
           isAdmin: true,
           isSuperAdmin: true,
           isVerified: true,
-          major: true,
-          graduationYear: true,
           createdAt: true,
         },
       });

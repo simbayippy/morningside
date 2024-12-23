@@ -47,8 +47,6 @@ export const getCurrentUser = cache(async () => {
         isSuperAdmin: true,
         isVerified: true,
         image: true,
-        graduationYear: true,
-        major: true,
       },
     });
 
