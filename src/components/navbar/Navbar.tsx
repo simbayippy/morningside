@@ -1,169 +1,166 @@
-"use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/solid";
 import { Button } from "../ui/button";
-import { createClient } from "@/utils/supabase/client";
-import { User } from "@supabase/supabase-js";
+import { getCurrentUser } from "@/app/(auth)/actions";
 import { signOut } from "@/app/(auth)/actions";
+import MobileMenu from "./MobileMenu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { UserCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const publicRoutes: { title: string; href: string }[] = [
-  { title: "Features", href: "#features" },
-  { title: "Resources", href: "#resources" },
-  { title: "Pricing", href: "#pricing" },
+  { title: "Home", href: "/" },
+  { title: "News", href: "/news" },
+  { title: "Events", href: "/events" },
 ];
 
 const privateRoutes: { title: string; href: string }[] = [
-  { title: "Dashboard", href: "/dashboard" },
-  { title: "Profile", href: "/profile" },
-  { title: "Settings", href: "/settings" },
+  ...publicRoutes,
+  { title: "Alumni Directory", href: "/directory" },
+  { title: "My Profile", href: "/profile" },
 ];
 
-const Navbar: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+const adminRoutes: { title: string; href: string }[] = [
+  ...privateRoutes,
+  { title: "Create", href: "/admin/create" },
+  { title: "Admin Dashboard", href: "/admin/dashboard" },
+];
 
-  useEffect(() => {
-    const supabase = createClient();
-    
-    // Check current auth status
-    void supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setLoading(false);
-    }).catch((error) => {
-      console.error('Error fetching user:', error);
-      setLoading(false);
-    });
+export default async function Navbar() {
+  const user = await getCurrentUser();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const routes = user ? privateRoutes : publicRoutes;
-
-  if (loading) {
-    return <div className="flex h-16 items-center justify-between px-6 lg:px-14">Loading...</div>;
-  }
+  // Choose routes based on user status
+  const routes = user
+    ? user.isAdmin
+      ? adminRoutes
+      : privateRoutes
+    : publicRoutes;
 
   return (
-    <div className="flex h-16 items-center justify-between px-6 lg:px-14">
-      <div className="flex items-center">
-        <Link href={"/"} className="shrink-0">
-          <h1 className="text-accent-foreground text-2xl font-bold">devlink</h1>
-        </Link>
-        <div className="bg-background hidden w-full justify-end gap-1 px-4 py-2 sm:flex">
-          {routes.map((route, index) => (
-            <Link
-              key={index}
-              href={route.href}
-              className={`hover:text-accent-foreground text-muted-foreground inline-flex h-10 w-full items-center px-4 py-2 text-sm transition-colors sm:w-auto`}
-            >
-              {route.title}
-            </Link>
-          ))}
-        </div>
-      </div>
+    <div className="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-14">
+      {/* Logo */}
+      <Link href={"/"} className="flex shrink-0 items-center gap-2">
+        <Image
+          src="/Logo.png"
+          alt="MCAA Logo"
+          width={40}
+          height={40}
+          className="h-10 w-10"
+        />
+        <h1 className="text-2xl font-bold text-primary">MCAA</h1>
+      </Link>
 
-      <div className="hidden items-center gap-2 sm:flex">
-        {user ? (
-          <>
-            <span className="text-sm text-muted-foreground">
-              {user.email}
-            </span>
-            <form action={signOut}>
-              <Button variant="secondary" size="sm" className="w-full">
-                Log Out
-              </Button>
-            </form>
-          </>
-        ) : (
-          <>
-            <Link href={"/login"} className="w-full sm:w-auto">
-              <Button variant="secondary" size="sm" className="w-full">
-                Log In
-              </Button>
-            </Link>
-            <Link href="/signup" className="w-full sm:w-auto">
-              <Button variant="default" size="sm" className="w-full">
-                Sign Up
-              </Button>
-            </Link>
-          </>
-        )}
-      </div>
+      {/* Right side navigation and user menu */}
+      <div className="flex items-center gap-6">
+        {/* Navigation Menu */}
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            {routes.map((route, index) => (
+              <NavigationMenuItem key={index}>
+                <Link href={route.href} legacyBehavior passHref>
+                  <NavigationMenuLink
+                    className={cn(
+                      navigationMenuTriggerStyle({
+                        underlineColor: "background",
+                        padding: "default",
+                      }),
+                    )}
+                  >
+                    {route.title}
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
 
-      <div className="flex items-center sm:hidden">
-        <button onClick={toggleMenu} className="p-2">
-          {menuOpen ? (
-            <XMarkIcon className="h-6 w-6" />
+        {/* User menu or auth buttons */}
+        <div className="hidden items-center md:flex">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-9 w-9 rounded-full"
+                >
+                  {user.image ? (
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage
+                        src={user.image}
+                        alt={user.name ?? user.email}
+                      />
+                      <AvatarFallback>
+                        {user.name?.[0] ?? user.email[0]!.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <UserCircle className="h-6 w-6 text-primary" />
+                  )}
+                  {!user.isVerified && (
+                    <span className="absolute -right-1 -top-1 h-3 w-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-yellow-500"></span>
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="flex flex-col">
+                  <span>{user.name ?? user.email}</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {user.email}
+                  </span>
+                  {user.isAdmin && (
+                    <span className="mt-1 w-fit rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                      Admin
+                    </span>
+                  )}
+                  {!user.isVerified && (
+                    <span className="mt-1 w-fit rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
+                      Unverified
+                    </span>
+                  )}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">My Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <form action={signOut} className="w-full">
+                    <button className="w-full text-left">Log Out</button>
+                  </form>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <Bars3Icon className="h-6 w-6" />
+            <Link href="/login">
+              <Button size="sm">Log In</Button>
+            </Link>
           )}
-        </button>
-      </div>
+        </div>
 
-      {menuOpen && <MobileMenu toggleMenu={toggleMenu} user={user} routes={routes} />}
+        {/* Mobile menu button and menu */}
+        <MobileMenu user={user} routes={routes} />
+      </div>
     </div>
   );
-};
-
-interface MobileMenuProps {
-  toggleMenu: () => void;
-  user: User | null;
-  routes: { title: string; href: string }[];
 }
-
-const MobileMenu: React.FC<MobileMenuProps> = ({ toggleMenu, user, routes }) => {
-  return (
-    <div className="bg-background absolute left-0 top-16 z-50 w-full px-6 py-4 sm:hidden">
-      {routes.map((route, index) => (
-        <Link
-          key={index}
-          href={route.href}
-          onClick={toggleMenu}
-          className="hover:text-accent-foreground text-muted-foreground block py-2 text-sm"
-        >
-          {route.title}
-        </Link>
-      ))}
-      <div className="mt-4 flex flex-col gap-2">
-        {user ? (
-          <>
-            <span className="text-sm text-muted-foreground">
-              {user.email}
-            </span>
-            <form action={signOut}>
-              <Button variant="secondary" size="sm" className="w-full">
-                Log Out
-              </Button>
-            </form>
-          </>
-        ) : (
-          <>
-            <Link href="/login" onClick={toggleMenu}>
-              <Button variant="secondary" size="sm" className="w-full">
-                Log In
-              </Button>
-            </Link>
-            <Link href="/signup" onClick={toggleMenu}>
-              <Button variant="default" size="sm" className="w-full">
-                Sign Up
-              </Button>
-            </Link>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default Navbar;

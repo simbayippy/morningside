@@ -5,18 +5,27 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import Navbar from "@/components/navbar/Navbar";
+import { Toaster } from "@/components/ui/sonner";
+import { type Metadata } from "next";
+import { Inter } from "next/font/google";
 
-export const metadata = {
-  title: "Katalog | AI file organizer",
-  description:
-    "Katalog automatically organizes your file downloads into appropriate folders, so you never lose track of your files again.",
-  icons: [
-    { rel: "icon", url: "/favicon.ico" },
-    { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" },
-  ],
-  // Add this line:
-  verification: {
-    google: "google00aa727eef66840c.html",
+export const metadata: Metadata = {
+  title: "Morningside College Alumni Association",
+  description: "Connect with fellow Morningside College alumni",
+  icons: {
+    icon: [
+      {
+        url: "/Logo.png",
+        href: "/Logo.png",
+      },
+    ],
+    apple: [
+      {
+        url: "/Logo.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
   },
 };
 
@@ -29,7 +38,7 @@ export default function RootLayout({
     <html lang="en" className={GeistMono.className} suppressHydrationWarning>
       {/* <html lang="en" className={GeistSans.className} suppressHydrationWarning> */}
       <body>
-        <TRPCReactProvider >
+        <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -38,6 +47,7 @@ export default function RootLayout({
             <Navbar />
             {/* {children} */}
             {children}
+            <Toaster />
           </ThemeProvider>
         </TRPCReactProvider>
       </body>

@@ -6,10 +6,10 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
+import { createClient } from "@/utils/supabase/server";
 import { db } from "@/server/db";
 
 /**
@@ -18,17 +18,76 @@ import { db } from "@/server/db";
  * This section defines the "contexts" that are available in the backend API.
  *
  * These allow you to access things when processing a request, like the database, the session, etc.
+ */
+export interface CreateContextOptions {
+  headers: Headers;
+  session: {
+    user: {
+      id: string;
+      email: string;
+      isAdmin: boolean;
+      isVerified: boolean;
+      name?: string;
+      image?: string;
+    } | null;
+  } | null;
+}
+
+/**
+ * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
+ * it from here.
  *
- * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
- * wrap this and provides the required context.
- *
- * @see https://trpc.io/docs/server/context
+ * Examples of things you may need it for:
+ * - testing, so we don't have to mock Next.js' req/res
+ * - tRPC's `createSSGHelpers`, where we don't have req/res
+ */
+export const createInnerTRPCContext = (opts: CreateContextOptions) => {
+  return {
+    session: opts.session,
+    headers: opts.headers,
+    db,
+  };
+};
+
+/**
+ * This is the actual context you will use in your router. It will be used to process every request
+ * that goes through your tRPC endpoint.
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  return {
-    db,
+  const supabase = await createClient();
+  const {
+    data: { user: supabaseUser },
+  } = await supabase.auth.getUser();
+
+  let session = null;
+
+  if (supabaseUser) {
+    // Fetch the corresponding Prisma user data
+    const prismaUser = await db.user.findUnique({
+      where: { id: supabaseUser.id },
+      select: {
+        id: true,
+        isAdmin: true,
+        // Add other fields you need from your Prisma schema
+      },
+    });
+
+    session = {
+      user: {
+        id: supabaseUser.id,
+        email: supabaseUser.email!,
+        isAdmin: prismaUser?.isAdmin ?? false, // Use Prisma data
+        isVerified: supabaseUser.email_confirmed_at != null,
+        name: supabaseUser.user_metadata.full_name as string | undefined,
+        image: supabaseUser.user_metadata.avatar_url as string | undefined,
+      },
+    };
+  }
+
+  return createInnerTRPCContext({
+    session,
     ...opts,
-  };
+  });
 };
 
 /**
@@ -75,9 +134,6 @@ export const createTRPCRouter = t.router;
 
 /**
  * Middleware for timing procedure execution and adding an artificial delay in development.
- *
- * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
- * network latency that would occur in production but not in local development.
  */
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();
@@ -104,3 +160,40 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+
+/**
+ * Protected (authenticated) procedure
+ *
+ * This is the base piece you use to build new queries and mutations on your tRPC API that require
+ * authentication. It guarantees that a user must be logged in to access the endpoint.
+ */
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to access this resource",
+      });
+    }
+    return next({
+      ctx: {
+        ...ctx,
+        // Infers the session type
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  });
+
+/**
+ * Admin procedure - reusable middleware for admin-only routes
+ */
+export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (!ctx.session.user.isAdmin) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only admins can perform this action",
+    });
+  }
+  return next();
+});

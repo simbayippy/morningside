@@ -5,6 +5,26 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "czrsqvfoxplmypvmfykr.supabase.co",
+        pathname: "/storage/v1/object/public/events/event-images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "czrsqvfoxplmypvmfykr.supabase.co",
+        pathname: "/storage/v1/object/public/events/membership-images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "czrsqvfoxplmypvmfykr.supabase.co",
+        pathname: "/storage/v1/object/public/events/news-images/**",
+      },
+    ],
+  },
+};
 
 export default config;
