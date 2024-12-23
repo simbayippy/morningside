@@ -35,6 +35,23 @@ interface MembershipFormProps {
   initialData?: MembershipFormValues;
 }
 
+// Add industry options
+const INDUSTRY_OPTIONS = [
+  "Technology",
+  "Finance",
+  "Healthcare",
+  "Education",
+  "Manufacturing",
+  "Retail",
+  "Real Estate",
+  "Consulting",
+  "Legal",
+  "Media",
+  "Non-profit",
+  "Government",
+  "Other",
+] as const;
+
 export function MembershipForm({
   onSubmit,
   isSubmitting = false,
@@ -56,6 +73,7 @@ export function MembershipForm({
       studentIdImage: "",
       employer: "",
       position: "",
+      industry: undefined,
       phoneNumber: "",
       address: "",
     },
@@ -414,53 +432,58 @@ export function MembershipForm({
             />
 
             {/* Professional Information Section */}
-            <div className="space-y-6">
-              <h2 className="font-semibold text-gray-900">
-                Professional Information (Optional)
-              </h2>
-
-              <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Professional Information</h3>
+              <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="employer"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        <div className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-purple-600" />
-                          Employer
-                        </div>
-                      </FormLabel>
+                      <FormLabel>Current Employer</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your employer"
-                          className="h-12"
-                          {...field}
-                        />
+                        <Input placeholder="Company name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
                   name="position"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        <div className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-purple-600" />
-                          Position
-                        </div>
-                      </FormLabel>
+                      <FormLabel>Position</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your position"
-                          className="h-12"
-                          {...field}
-                        />
+                        <Input placeholder="Job title" {...field} />
                       </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="industry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Industry</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select industry" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {INDUSTRY_OPTIONS.map((industry) => (
+                            <SelectItem key={industry} value={industry}>
+                              {industry}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

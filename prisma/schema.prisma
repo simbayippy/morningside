@@ -24,6 +24,7 @@ model User {
   email          String   @unique
   image          String?
   isAdmin        Boolean  @default(false)
+  isSuperAdmin   Boolean  @default(false)
   isVerified     Boolean  @default(false)
   graduationYear Int?
   major          String?
@@ -63,6 +64,7 @@ model Member {
   // Professional Information
   employer         String?
   position         String?
+  industry         String?       // Industry they are working in
   
   // Contact Information
   phoneNumber      String
@@ -71,13 +73,11 @@ model Member {
   // Verification Status
   isVerified       Boolean        @default(false)
   verifiedAt       DateTime?
+  status           String         @default("PENDING")
+  rejectionReason  String?
   
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
-
-  // Status
-  status           String         @default("PENDING") // PENDING, APPROVED, REJECTED
-  rejectionReason  String?
 
   @@index([userId])
 }

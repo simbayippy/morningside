@@ -23,7 +23,7 @@ export default async function NewsPage() {
         </div>
         {currentUser?.isAdmin && (
           <Link
-            href="/news/create"
+            href="/admin/create/news"
             className="mt-6 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90 sm:mt-0"
           >
             Create Article

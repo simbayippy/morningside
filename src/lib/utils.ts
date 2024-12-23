@@ -49,3 +49,12 @@ export function isAdmin(user: { isAdmin: boolean } | null): boolean {
 export function isVerified(user: { isVerified: boolean } | null): boolean {
   return !!user?.isVerified;
 }
+
+export function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}

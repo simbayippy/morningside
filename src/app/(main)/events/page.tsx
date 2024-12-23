@@ -51,10 +51,8 @@ export default async function EventsPage({ searchParams }: EventsPageProps) {
             </p>
           </div>
           {currentUser?.isAdmin && (
-            <Link href="/create/events">
-              <Button className="rounded-lg bg-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-purple-700">
-                Create Event
-              </Button>
+            <Link href="/admin/create/events">
+              <Button>Create Event</Button>
             </Link>
           )}
         </div>

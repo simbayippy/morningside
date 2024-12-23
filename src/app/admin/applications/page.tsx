@@ -344,7 +344,91 @@ export default function ApplicationsPage() {
         )}
 
         {/* Alert Dialogs */}
-        {/* ... existing alert dialogs ... */}
+        <AlertDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Reject Application</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to reject {selectedMemberName}&apos;s
+                membership application? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="mt-4">
+              <Textarea
+                placeholder="Enter reason for rejection (optional)"
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleReject}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {rejectMembership.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Rejecting...
+                  </>
+                ) : (
+                  "Reject Application"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog
+          open={approveDialogOpen}
+          onOpenChange={setApproveDialogOpen}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Approve Application</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to approve {selectedMemberName}&apos;s
+                membership application?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleApprove}>
+                {verifyMembership.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Approving...
+                  </>
+                ) : (
+                  "Approve Application"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Image Preview Dialog */}
+        <AlertDialog
+          open={!!selectedImage}
+          onOpenChange={() => setSelectedImage(null)}
+        >
+          <AlertDialogContent className="max-w-3xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Student ID Image</AlertDialogTitle>
+            </AlertDialogHeader>
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Student ID"
+                className="w-full rounded-lg"
+              />
+            )}
+            <AlertDialogFooter>
+              <AlertDialogCancel>Close</AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

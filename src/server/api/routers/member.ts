@@ -260,4 +260,82 @@ export const memberRouter = createTRPCRouter({
         });
       }
     }),
+
+  getMemberById: protectedProcedure
+    .input(z.object({ memberId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      // Check if the current user is a verified member
+      const currentMember = await ctx.db.member.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+          isVerified: true,
+        },
+      });
+
+      if (!currentMember) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You must be a verified member to view alumni profiles",
+        });
+      }
+
+      // Get the requested member's details
+      const member = await ctx.db.member.findUnique({
+        where: {
+          id: input.memberId,
+          isVerified: true,
+        },
+        include: {
+          user: {
+            select: {
+              email: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      if (!member) {
+        return null;
+      }
+
+      return member;
+    }),
+
+  getAllMembers: protectedProcedure.query(async ({ ctx }) => {
+    // Check if the current user is a verified member
+    const currentMember = await ctx.db.member.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        isVerified: true,
+      },
+    });
+
+    if (!currentMember) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be a verified member to view the alumni directory",
+      });
+    }
+
+    // Get all verified members
+    const members = await ctx.db.member.findMany({
+      where: {
+        isVerified: true,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            image: true,
+          },
+        },
+      },
+      orderBy: {
+        englishName: "asc",
+      },
+    });
+
+    return members;
+  }),
 });

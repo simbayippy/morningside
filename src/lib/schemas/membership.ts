@@ -65,5 +65,8 @@ export const membershipFormSchema = z.object({
 
   // Additional Contact Information (Optional)
   address: z.string().optional(),
+
+  // Industry Information (Optional)
+  industry: z.string().optional(),
 });
 export type MembershipFormValues = z.infer<typeof membershipFormSchema>;

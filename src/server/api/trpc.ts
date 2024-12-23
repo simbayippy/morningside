@@ -197,3 +197,24 @@ export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
   }
   return next();
 });
+
+/**
+ * Super Admin procedure - reusable middleware for super admin-only routes
+ */
+export const superAdminProcedure = protectedProcedure.use(
+  async ({ ctx, next }) => {
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { isSuperAdmin: true },
+    });
+
+    if (!user?.isSuperAdmin) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Only super admins can perform this action",
+      });
+    }
+
+    return next();
+  },
+);

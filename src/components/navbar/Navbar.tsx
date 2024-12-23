@@ -22,6 +22,7 @@ import {
 import { UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { api } from "@/trpc/server";
 
 const publicRoutes: { title: string; href: string }[] = [
   { title: "Home", href: "/" },
@@ -37,12 +38,14 @@ const privateRoutes: { title: string; href: string }[] = [
 
 const adminRoutes: { title: string; href: string }[] = [
   ...privateRoutes,
-  { title: "Create", href: "/admin/create" },
   { title: "Admin Dashboard", href: "/admin/dashboard" },
 ];
 
 export default async function Navbar() {
-  const user = await getCurrentUser();
+  const [user, membership] = await Promise.all([
+    getCurrentUser(),
+    api.member.getMyMembership(),
+  ]);
 
   // Choose routes based on user status
   const routes = user
@@ -125,23 +128,48 @@ export default async function Navbar() {
                   <span className="text-xs font-normal text-muted-foreground">
                     {user.email}
                   </span>
-                  {user.isAdmin && (
-                    <span className="mt-1 w-fit rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                      Admin
-                    </span>
-                  )}
-                  {!user.isVerified && (
-                    <span className="mt-1 w-fit rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
-                      Unverified
-                    </span>
-                  )}
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {user.isSuperAdmin ? (
+                      <span className="w-fit rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
+                        Super Admin
+                      </span>
+                    ) : user.isAdmin ? (
+                      <span className="w-fit rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                        Admin
+                      </span>
+                    ) : null}
+                    {membership?.isVerified ? (
+                      <span className="w-fit rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-600">
+                        {membership.membershipType === "STUDENT"
+                          ? "Student Member"
+                          : membership.membershipType === "ORDINARY_II"
+                            ? "Ordinary Member II"
+                            : membership.membershipType === "ORDINARY_I"
+                              ? "Ordinary Member I"
+                              : "Honorary Member"}
+                      </span>
+                    ) : membership?.status === "PENDING" ? (
+                      <span className="w-fit rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
+                        Pending Member
+                      </span>
+                    ) : membership?.status === "REJECTED" ? (
+                      <span className="w-fit rounded-full bg-red-500/10 px-2 py-0.5 text-xs text-red-600">
+                        Rejected Member
+                      </span>
+                    ) : null}
+                    {!user.isVerified && (
+                      <span className="w-fit rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
+                        Unverified
+                      </span>
+                    )}
+                  </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/profile">My Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/settings">Settings</Link>
+                  <Link href="/membership">Membership Details</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

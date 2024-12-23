@@ -47,7 +47,7 @@ export default function CreateNewsPage() {
       <div className="mx-auto max-w-[1200px] px-8 py-8">
         {/* Back Button */}
         <Link
-          href="/create"
+          href="/admin/create"
           className="group mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />

@@ -17,7 +17,7 @@ export default function CreatePage() {
         <div className="grid gap-8 md:grid-cols-2">
           {/* Event Creation Card */}
           <Link
-            href="/create/events"
+            href="/admin/create/events"
             className="group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-all hover:shadow-lg"
           >
             <div className="relative z-10">
@@ -35,7 +35,7 @@ export default function CreatePage() {
 
           {/* News Creation Card */}
           <Link
-            href="/create/news"
+            href="/admin/create/news"
             className="group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-all hover:shadow-lg"
           >
             <div className="relative z-10">

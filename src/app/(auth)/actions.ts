@@ -107,6 +107,7 @@ export async function getCurrentUser() {
       isAdmin: true,
       isVerified: true,
       image: true,
+      isSuperAdmin: true,
     },
   });
 

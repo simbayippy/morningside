@@ -5,12 +5,14 @@ import Link from "next/link";
 import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/solid";
 import { Button } from "../ui/button";
 import { signOut } from "@/app/(auth)/actions";
+import { api } from "@/trpc/react";
 
 interface PrismaUser {
   id: string;
   email: string;
   name: string | null;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   isVerified: boolean;
   image: string | null;
 }
@@ -22,6 +24,7 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ user, routes }: MobileMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: membership } = api.member.getMyMembership.useQuery();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -52,19 +55,46 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
           <div className="mt-4 flex flex-col gap-2">
             {user ? (
               <>
-                <span className="text-sm text-muted-foreground">
-                  {user.name ?? user.email}
-                  {user.isAdmin && (
-                    <span className="ml-2 rounded-full bg-primary/10 px-2 py-1 text-xs text-primary">
-                      Admin
-                    </span>
-                  )}
-                  {!user.isVerified && (
-                    <span className="ml-2 rounded-full bg-yellow-500/10 px-2 py-1 text-xs text-yellow-500">
-                      Unverified
-                    </span>
-                  )}
-                </span>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm text-muted-foreground">
+                    {user.name ?? user.email}
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {user.isSuperAdmin ? (
+                      <span className="w-fit rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
+                        Super Admin
+                      </span>
+                    ) : user.isAdmin ? (
+                      <span className="w-fit rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                        Admin
+                      </span>
+                    ) : null}
+                    {membership?.isVerified ? (
+                      <span className="w-fit rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-600">
+                        {membership.membershipType === "STUDENT"
+                          ? "Student Member"
+                          : membership.membershipType === "ORDINARY_II"
+                            ? "Ordinary Member II"
+                            : membership.membershipType === "ORDINARY_I"
+                              ? "Ordinary Member I"
+                              : "Honorary Member"}
+                      </span>
+                    ) : membership?.status === "PENDING" ? (
+                      <span className="w-fit rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
+                        Pending Member
+                      </span>
+                    ) : membership?.status === "REJECTED" ? (
+                      <span className="w-fit rounded-full bg-red-500/10 px-2 py-0.5 text-xs text-red-600">
+                        Rejected Member
+                      </span>
+                    ) : null}
+                    {!user.isVerified && (
+                      <span className="w-fit rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-500">
+                        Unverified
+                      </span>
+                    )}
+                  </div>
+                </div>
                 <form action={signOut}>
                   <Button variant="secondary" size="sm" className="w-full">
                     Log Out
