@@ -6,15 +6,16 @@ import { api } from "@/trpc/server";
 import { formatDate } from "@/lib/utils";
 
 interface NewsPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: NewsPageProps): Promise<Metadata> {
-  const article = await api.news.getBySlug({ slug: params.slug });
+  const { slug } = await params;
+  const article = await api.news.getBySlug({ slug });
 
   if (!article) {
     return {
@@ -29,7 +30,8 @@ export async function generateMetadata({
 }
 
 export default async function NewsArticlePage({ params }: NewsPageProps) {
-  const article = await api.news.getBySlug({ slug: params.slug });
+  const { slug } = await params;
+  const article = await api.news.getBySlug({ slug });
 
   if (!article) {
     notFound();

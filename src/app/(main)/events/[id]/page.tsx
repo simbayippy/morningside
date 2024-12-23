@@ -9,15 +9,15 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface EventPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 export default async function EventPage({ params }: EventPageProps) {
   // Await the params object before destructuring
-  const awaitedParams = await Promise.resolve(params);
-  const { id } = awaitedParams;
+  const { id } = await params;
 
   // Fetch event data, check admin status, and get current user in parallel
   const [event, isAdmin, currentUser] = await Promise.all([

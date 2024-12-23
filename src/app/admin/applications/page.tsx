@@ -39,6 +39,7 @@ export default function ApplicationsPage() {
     onSuccess: () => {
       toast.success("Membership application approved");
       void utils.member.getAllApplications.invalidate();
+      router.refresh();
       setApproveDialogOpen(false);
       setSelectedMemberId(null);
       setSelectedMemberName("");
@@ -54,6 +55,7 @@ export default function ApplicationsPage() {
     onSuccess: () => {
       toast.success("Membership application rejected");
       void utils.member.getAllApplications.invalidate();
+      router.refresh();
       setRejectDialogOpen(false);
       setRejectionReason("");
       setSelectedMemberId(null);
@@ -342,95 +344,7 @@ export default function ApplicationsPage() {
         )}
 
         {/* Alert Dialogs */}
-        {/* Approve Alert Dialog */}
-        <AlertDialog
-          open={approveDialogOpen}
-          onOpenChange={setApproveDialogOpen}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                Approve Membership Application
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to approve the membership application for{" "}
-                <span className="font-medium">{selectedMemberName}</span>? This
-                action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                onClick={() => {
-                  setApproveDialogOpen(false);
-                  setSelectedMemberId(null);
-                  setSelectedMemberName("");
-                }}
-              >
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleApprove}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                {verifyMembership.isPending ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </div>
-                ) : (
-                  "Approve"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        {/* Reject Alert Dialog */}
-        <AlertDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Reject Membership Application</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to reject the membership application for{" "}
-                <span className="font-medium">{selectedMemberName}</span>? This
-                action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <div className="py-4">
-              <Textarea
-                placeholder="Enter reason for rejection (optional)"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                className="min-h-[100px]"
-              />
-            </div>
-            <AlertDialogFooter>
-              <AlertDialogCancel
-                onClick={() => {
-                  setRejectDialogOpen(false);
-                  setRejectionReason("");
-                  setSelectedMemberId(null);
-                  setSelectedMemberName("");
-                }}
-              >
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleReject}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                {rejectMembership.isPending ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Processing...
-                  </div>
-                ) : (
-                  "Reject"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {/* ... existing alert dialogs ... */}
       </div>
     </div>
   );

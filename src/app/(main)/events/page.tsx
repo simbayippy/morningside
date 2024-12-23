@@ -8,20 +8,24 @@ import { SearchForm } from "./components/search-form";
 import { NoEvents } from "./components/no-events";
 import { EventList } from "./components/event-list";
 
-export default async function EventsPage({
-  searchParams,
-}: {
-  searchParams: { search?: string };
-}) {
+interface EventsPageProps {
+  searchParams: Promise<{
+    search?: string;
+  }>;
+}
+
+export default async function EventsPage({ searchParams }: EventsPageProps) {
+  const { search = "" } = await searchParams;
+
   const [upcomingEvents, pastEvents, currentUser] = await Promise.all([
     api.event.getUpcoming(),
     api.event.getPast(),
     getCurrentUser(),
   ]);
 
-  const filterEvents = (events: Event[], search = "") => {
-    if (!search) return events;
-    const searchLower = search.toLowerCase();
+  const filterEvents = (events: Event[], searchTerm = "") => {
+    if (!searchTerm) return events;
+    const searchLower = searchTerm.toLowerCase();
     return events.filter(
       (event) =>
         event.title.toLowerCase().includes(searchLower) ||
@@ -30,7 +34,6 @@ export default async function EventsPage({
     );
   };
 
-  const search = searchParams?.search ?? "";
   const filteredUpcoming = filterEvents(upcomingEvents, search);
   const filteredPast = filterEvents(pastEvents, search);
 
