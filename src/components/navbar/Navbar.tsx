@@ -42,10 +42,8 @@ const adminRoutes: { title: string; href: string }[] = [
 ];
 
 export default async function Navbar() {
-  const [user, membership] = await Promise.all([
-    getCurrentUser(),
-    api.member.getMyMembership(),
-  ]);
+  const user = await getCurrentUser();
+  const membership = user ? await api.member.getMyMembership() : null;
 
   // Choose routes based on user status
   const routes = user

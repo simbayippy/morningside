@@ -71,11 +71,9 @@ const membershipTypes: Record<MembershipType, MembershipTypeInfo> = {
 };
 
 export default async function MembershipPage() {
-  const [currentUser, membership] = await Promise.all([
-    getCurrentUser(),
-    api.member.getMyMembership(),
-  ]);
-
+  const currentUser = await getCurrentUser();
+  console.log(currentUser);
+  const membership = currentUser ? await api.member.getMyMembership() : null;
   if (!currentUser) {
     redirect("/login");
   }

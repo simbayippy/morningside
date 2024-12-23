@@ -24,7 +24,9 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ user, routes }: MobileMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { data: membership } = api.member.getMyMembership.useQuery();
+  const { data: membership } = api.member.getMyMembership.useQuery(undefined, {
+    enabled: !!user,
+  });
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
