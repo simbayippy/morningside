@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Users, PlusCircle, Shield } from "lucide-react";
+import { Loader2, Users, PlusCircle, Shield, Calendar } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboardPage() {
@@ -60,6 +60,27 @@ export default function AdminDashboardPage() {
             </Card>
           </Link>
 
+          {/* Event Registrations Card */}
+          <Link href="/admin/events" className="block h-full">
+            <Card className="h-full transition-all hover:shadow-lg">
+              <CardHeader>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-100">
+                  <Calendar className="h-6 w-6 text-orange-600" />
+                </div>
+                <CardTitle>Event Registrations</CardTitle>
+                <p className="text-sm text-gray-600">
+                  View and manage event registrations
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div>
+                  <p className="text-2xl font-bold text-orange-600">Events</p>
+                  <p className="text-sm text-gray-600">View registrations</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
           {/* Create Content Card */}
           <Link href="/admin/create" className="block h-full">
             <Card className="h-full transition-all hover:shadow-lg">
@@ -69,7 +90,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <CardTitle>Create Content</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Create and manage events, news, and other content
+                  Create events, news, and other content
                 </p>
               </CardHeader>
               <CardContent>

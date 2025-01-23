@@ -1,6 +1,4 @@
-import { type EmailOtpType } from "@supabase/supabase-js";
 import { type NextRequest } from "next/server";
-
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
@@ -13,8 +11,6 @@ interface GoogleUserMetadata {
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const token_hash = searchParams.get("token_hash");
-  const type = searchParams.get("type") as EmailOtpType | null;
   const code = searchParams.get("code");
   const supabase = await createClient();
 
@@ -24,6 +20,7 @@ export async function GET(request: NextRequest) {
       data: { session },
       error,
     } = await supabase.auth.exchangeCodeForSession(code);
+
     if (!error && session?.user) {
       console.log("Successfully exchanged code for session");
 
@@ -55,28 +52,6 @@ export async function GET(request: NextRequest) {
     console.log("Failed to exchange code:", error);
   }
 
-  if (token_hash && type) {
-    console.log("Handling email verification");
-    const { error, data } = await supabase.auth.verifyOtp({
-      type,
-      token_hash,
-    });
-    if (!error && data.user) {
-      console.log(
-        "Successfully verified OTP, updating user verification status",
-      );
-      await prisma.user.update({
-        where: { id: data.user.id },
-        data: { isVerified: true },
-      });
-      console.log(
-        "Successfully updated user verification status, redirecting to home",
-      );
-      redirect("/");
-    }
-    console.log("Failed to verify OTP:", error);
-  }
-
-  console.log("No valid token_hash or code found, redirecting to error page");
+  console.log("No valid code found, redirecting to error page");
   redirect("/error");
 }

@@ -16,14 +16,17 @@ const footerLinks = {
     { name: "Research", href: "/research" },
   ],
   contact: {
-    address: "1501 Morningside Ave, Sioux City, IA 51106",
-    email: "alumni@morningside.edu",
-    phone: "(712) 274-5000",
+    address: {
+      text: "College Office\nMaurice R. Greenberg Building, Morningside College\nThe Chinese University of Hong Kong\nShatin, New Territories\nHong Kong S.A.R. The People's Republic of China",
+      href: "https://maps.app.goo.gl/AqekaGBTxEE9UvDy6 ",
+    },
+    email: "cuhkmcaa@gmail.com",
+    // phone: "+852 3505 1000",
   },
   socials: [
     {
       name: "Facebook",
-      href: "https://facebook.com",
+      href: "https://www.facebook.com/cuhkmcaa",
       icon: (props: React.ComponentProps<"svg">) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
@@ -36,7 +39,7 @@ const footerLinks = {
     },
     {
       name: "Instagram",
-      href: "https://instagram.com",
+      href: "https://www.instagram.com/morningside.alumni",
       icon: (props: React.ComponentProps<"svg">) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
@@ -48,24 +51,11 @@ const footerLinks = {
       ),
     },
     {
-      name: "Twitter",
-      href: "https://twitter.com",
-      icon: (props: React.ComponentProps<"svg">) => (
-        <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-        </svg>
-      ),
-    },
-    {
       name: "LinkedIn",
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/company/ouhtk-morningside-college-alumni-association/about/?viewAsMember=true",
       icon: (props: React.ComponentProps<"svg">) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
-          <path
-            fillRule="evenodd"
-            d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.418-4.814c.23-.861.907-1.538 1.768-1.768C5.746 5 12 5 12 5s6.254 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
-            clipRule="evenodd"
-          />
+          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
         </svg>
       ),
     },
@@ -86,14 +76,16 @@ export function Footer() {
             </p>
             <div className="mt-6 flex space-x-6">
               {footerLinks.socials.map((item) => (
-                <Link
+                <a
                   key={item.name}
                   href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white"
                 >
                   <span className="sr-only">{item.name}</span>
                   <item.icon className="h-6 w-6" aria-hidden="true" />
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -136,7 +128,16 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold">Contact Us</h3>
             <ul className="mt-4 space-y-2 text-sm text-gray-300">
-              <li>{footerLinks.contact.address}</li>
+              <li>
+                <a
+                  href={footerLinks.contact.address.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="whitespace-pre-line hover:text-white"
+                >
+                  {footerLinks.contact.address.text}
+                </a>
+              </li>
               <li>
                 <a
                   href={`mailto:${footerLinks.contact.email}`}
@@ -145,14 +146,14 @@ export function Footer() {
                   {footerLinks.contact.email}
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a
                   href={`tel:${footerLinks.contact.phone}`}
                   className="hover:text-white"
                 >
                   {footerLinks.contact.phone}
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

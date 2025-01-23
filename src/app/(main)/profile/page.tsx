@@ -51,7 +51,7 @@ export default function ProfilePage() {
   }
 
   if (!profile) {
-    return <NonMemberView onEditClick={() => setIsEditing(true)} />;
+    return <NonMemberView />;
   }
 
   const handleEditClick = () => {

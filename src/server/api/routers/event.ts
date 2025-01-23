@@ -30,6 +30,9 @@ export const eventRouter = createTRPCRouter({
         orderBy: {
           date: "asc",
         },
+        include: {
+          registrations: true,
+        },
       });
     } catch (error) {
       console.error("Error in getUpcoming:", error);
@@ -57,6 +60,9 @@ export const eventRouter = createTRPCRouter({
         },
         orderBy: {
           date: "desc",
+        },
+        include: {
+          registrations: true,
         },
       });
     } catch (error) {
@@ -176,22 +182,24 @@ export const eventRouter = createTRPCRouter({
     }),
 
   delete: adminProcedure
-    .input(z.object({
-      id: z.string()
-    }))
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       // First delete all related registrations
       await ctx.db.eventRegistration.deleteMany({
         where: {
-          eventId: input.id
-        }
+          eventId: input.id,
+        },
       });
 
       // Then delete the event
       return await ctx.db.event.delete({
         where: {
-          id: input.id
-        }
+          id: input.id,
+        },
       });
     }),
 

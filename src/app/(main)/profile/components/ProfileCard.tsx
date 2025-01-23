@@ -46,11 +46,24 @@ export function ProfileCard({ profile, onEditClick }: ProfileCardProps) {
             <Avatar className="h-20 w-20">
               <AvatarImage src={profile.image ?? undefined} />
               <AvatarFallback className="text-lg">
-                {getInitials(profile.name ?? "")}
+                {getInitials(profile.englishName ?? profile.name ?? "")}
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-2xl">{profile.name}</CardTitle>
+              <div className="space-y-1">
+                <CardTitle className="text-2xl">
+                  {profile.englishName ?? profile.name}
+                </CardTitle>
+                {profile.chineseName && (
+                  <p className="text-lg text-gray-600">{profile.chineseName}</p>
+                )}
+                {profile.preferredName &&
+                  profile.preferredName !== profile.englishName && (
+                    <p className="text-sm text-gray-500">
+                      Preferred: {profile.preferredName}
+                    </p>
+                  )}
+              </div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {profile.isAdmin && (
                   <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
@@ -119,24 +132,6 @@ export function ProfileCard({ profile, onEditClick }: ProfileCardProps) {
                   </p>
                 </div>
               </div>
-              {/* Chinese Name */}
-              {profile.chineseName && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Chinese Name
-                  </p>
-                  <p className="text-gray-900">{profile.chineseName}</p>
-                </div>
-              )}
-              {/* Preferred Name */}
-              {profile.preferredName && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Preferred Name
-                  </p>
-                  <p className="text-gray-900">{profile.preferredName}</p>
-                </div>
-              )}
             </div>
           </div>
 

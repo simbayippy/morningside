@@ -7,7 +7,10 @@ import { GeistMono } from "geist/font/mono";
 import Navbar from "@/components/navbar/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { type Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Red_Hat_Display, Literata } from "next/font/google";
+
+const redHatDisplay = Red_Hat_Display({ subsets: ["latin"] });
+const literata = Literata({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Morningside College Alumni Association",
@@ -35,9 +38,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistMono.className} suppressHydrationWarning>
-      {/* <html lang="en" className={GeistSans.className} suppressHydrationWarning> */}
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={redHatDisplay.className}>
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"

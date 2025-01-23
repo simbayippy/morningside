@@ -9,9 +9,9 @@ export default async function DirectoryLayout({
 }) {
   const user = await getCurrentUser();
 
-  // If not logged in, redirect to login
+  // If not logged in, redirect to login page
   if (!user) {
-    redirect("/api/auth/signin");
+    redirect("/login?callbackUrl=/directory");
   }
 
   // Check if user is a verified member using tRPC
