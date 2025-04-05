@@ -1,9 +1,11 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/trpc/server";
 import { formatDate } from "@/lib/utils";
+import { isUserAdmin } from "@/lib/auth";
+import { AdminControls } from "./admin-controls";
 
 interface NewsPageProps {
   params: Promise<{
@@ -31,7 +33,12 @@ export async function generateMetadata({
 
 export default async function NewsArticlePage({ params }: NewsPageProps) {
   const { slug } = await params;
-  const article = await api.news.getBySlug({ slug });
+
+  // Fetch article data and check admin status in parallel
+  const [article, isAdmin] = await Promise.all([
+    api.news.getBySlug({ slug }),
+    isUserAdmin(),
+  ]);
 
   if (!article) {
     notFound();
@@ -96,14 +103,17 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
           {article.content}
         </div>
 
-        {/* Navigation */}
-        <div className="mt-16 flex justify-center">
-          <Link
-            href="/news"
-            className="rounded-full bg-[#383590] px-6 py-3 text-sm font-semibold text-white hover:bg-[#383590]/90"
-          >
-            ← Back to News
-          </Link>
+        {/* Admin Controls & Navigation */}
+        <div className="mt-16 space-y-8">
+          {isAdmin && <AdminControls slug={article.slug} />}
+          <div className="flex justify-center">
+            <Link
+              href="/news"
+              className="rounded-full bg-[#383590] px-6 py-3 text-sm font-semibold text-white hover:bg-[#383590]/90"
+            >
+              ← Back to News
+            </Link>
+          </div>
         </div>
       </article>
     </div>

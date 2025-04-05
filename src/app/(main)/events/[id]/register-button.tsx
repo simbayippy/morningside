@@ -48,7 +48,7 @@ export default function RegisterButton({
     <Button
       onClick={handleRegister}
       disabled={isAtCapacity || isRegistering}
-      className="w-full bg-purple-600 text-white hover:bg-purple-700"
+      className="w-full bg-[#F5BC4C] text-white hover:bg-[#F5BC4C]/90"
     >
       {isRegistering
         ? "Registering..."
