@@ -120,7 +120,7 @@ export default async function Navbar() {
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-56 border-secondary">
                 <DropdownMenuLabel className="flex flex-col">
                   <span>{user.name ?? user.email}</span>
                   <span className="text-xs font-normal text-muted-foreground">
