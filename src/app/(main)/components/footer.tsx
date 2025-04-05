@@ -15,18 +15,22 @@ const footerLinks = {
     { name: "Library Access", href: "/library" },
     { name: "Research", href: "/research" },
   ],
-  contact: {
-    address: {
-      text: "College Office\nMaurice R. Greenberg Building, Morningside College\nThe Chinese University of Hong Kong\nShatin, New Territories\nHong Kong S.A.R. The People's Republic of China",
-      href: "https://maps.app.goo.gl/AqekaGBTxEE9UvDy6 ",
-    },
-    email: "cuhkmcaa@gmail.com",
-    // phone: "+852 3505 1000",
-  },
   socials: [
     {
+      name: "M",
+      href: "mailto:example@morningside.edu",
+      icon: (props: React.ComponentProps<"svg">) => (
+        <svg viewBox="0 0 24 24" {...props}>
+          <path
+            fill="currentColor"
+            d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"
+          />
+        </svg>
+      ),
+    },
+    {
       name: "Facebook",
-      href: "https://www.facebook.com/cuhkmcaa",
+      href: "https://www.facebook.com",
       icon: (props: React.ComponentProps<"svg">) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
@@ -39,7 +43,7 @@ const footerLinks = {
     },
     {
       name: "Instagram",
-      href: "https://www.instagram.com/morningside.alumni",
+      href: "https://www.instagram.com",
       icon: (props: React.ComponentProps<"svg">) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path
@@ -52,7 +56,7 @@ const footerLinks = {
     },
     {
       name: "LinkedIn",
-      href: "https://www.linkedin.com/company/ouhtk-morningside-college-alumni-association/about/?viewAsMember=true",
+      href: "https://www.linkedin.com",
       icon: (props: React.ComponentProps<"svg">) => (
         <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
           <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
@@ -64,41 +68,47 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-          {/* College Info */}
-          <div>
-            <h3 className="text-lg font-semibold">Morningside University</h3>
-            <p className="mt-4 text-sm text-gray-300">
-              Empowering students to pursue their dreams through education,
-              innovation, and lifelong learning.
-            </p>
-            <div className="mt-6 flex space-x-6">
+    <footer className="bg-[#222222] text-white">
+      <div className="mx-auto max-w-7xl px-16 py-24">
+        <div className="grid grid-cols-1 gap-24 lg:grid-cols-3">
+          {/* Contact Us */}
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold">Contact Us</h3>
+            <h4 className="text-xl">Morningside College Alumni Association</h4>
+            <address className="space-y-1 not-italic text-gray-300">
+              <p>College Office</p>
+              <p>Maurice R. Greenberg Building,</p>
+              <p>Morningside College</p>
+              <p>The Chinese University of Hong Kong</p>
+              <p>Shatin, New Territories</p>
+              <p>Hong Kong S.A.R., The People&apos;s Republic of China</p>
+            </address>
+
+            <div className="flex gap-6">
               {footerLinks.socials.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white"
+                  className="text-white hover:text-gray-300"
                 >
                   <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-6 w-6" aria-hidden="true" />
+                  <item.icon className="h-8 w-8" aria-hidden="true" />
                 </a>
               ))}
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold">Quick Links</h3>
-            <ul className="mt-4 space-y-2">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold">Quick Links</h3>
+            <ul className="space-y-4">
               {footerLinks.quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-300 hover:text-white"
+                    className="text-gray-300 hover:text-white"
                   >
                     {link.name}
                   </Link>
@@ -108,14 +118,14 @@ export function Footer() {
           </div>
 
           {/* Resources */}
-          <div>
-            <h3 className="text-lg font-semibold">Resources</h3>
-            <ul className="mt-4 space-y-2">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold">Resources</h3>
+            <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-300 hover:text-white"
+                    className="text-gray-300 hover:text-white"
                   >
                     {link.name}
                   </Link>
@@ -123,47 +133,6 @@ export function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold">Contact Us</h3>
-            <ul className="mt-4 space-y-2 text-sm text-gray-300">
-              <li>
-                <a
-                  href={footerLinks.contact.address.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="whitespace-pre-line hover:text-white"
-                >
-                  {footerLinks.contact.address.text}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${footerLinks.contact.email}`}
-                  className="hover:text-white"
-                >
-                  {footerLinks.contact.email}
-                </a>
-              </li>
-              {/* <li>
-                <a
-                  href={`tel:${footerLinks.contact.phone}`}
-                  className="hover:text-white"
-                >
-                  {footerLinks.contact.phone}
-                </a>
-              </li> */}
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="mt-12 border-t border-gray-800 pt-8">
-          <p className="text-center text-sm text-gray-400">
-            © {new Date().getFullYear()} Morningside University Alumni
-            Association. All rights reserved.
-          </p>
         </div>
       </div>
     </footer>

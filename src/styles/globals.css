@@ -3,22 +3,42 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 302 53% 98%;
-    --foreground: 302 53% 10%;
-    --card: 302 53% 100%;
-    --card-foreground: 302 53% 10%;
-    --popover: 302 53% 100%;
-    --popover-foreground: 302 53% 10%;
-    --primary: 302 53% 37%;
-    --primary-foreground: 302 53% 98%;
-    --secondary: 332 53% 80%;
-    --secondary-foreground: 332 53% 10%;
-    --muted: 302 26% 90%;
-    --muted-foreground: 302 53% 40%;
-    --accent: 2 53% 60%;
-    --accent-foreground: 2 53% 98%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 100% 98%;
+    /* Base colors */
+    --background: 0 0% 100%; /* White #FFFFFF */
+    --foreground: 0 0% 13%; /* Text #222222 */
+
+    /* Card colors */
+    --card: 0 0% 100%; /* White #FFFFFF */
+    --card-foreground: 0 0% 13%; /* Text #222222 */
+
+    /* Popover colors */
+    --popover: 0 0% 100%; /* White #FFFFFF */
+    --popover-foreground: 0 0% 13%; /* Text #222222 */
+
+    /* Primary colors - Purple */
+    --primary: 242 41% 39%; /* Purple #383590 */
+    --primary-foreground: 0 0% 100%; /* White #FFFFFF */
+
+    /* Secondary colors - Yellow */
+    --secondary: 42 89% 63%; /* Yellow #F5BC4C */
+    --secondary-foreground: 0 0% 13%; /* Text #222222 */
+
+    /* Muted colors */
+    --muted: 6 33% 93%; /* Pink #F4E9E8 */
+    --muted-foreground: 3 15% 9%; /* Brown #1C1413 */
+
+    /* Accent colors - Blue */
+    --accent: 198 69% 55%; /* Blue #40ACD8 */
+    --accent-foreground: 0 0% 100%; /* White #FFFFFF */
+
+    /* Destructive colors - Red */
+    --destructive: 360 87% 60%; /* Red #F02A2B */
+    --destructive-foreground: 0 0% 100%; /* White #FFFFFF */
+
+    /* Border and ring colors */
+    --border: 241 40% 39%; /* Purple #3E3A8A */
+    --input: 241 40% 39%; /* Purple #3E3A8A */
+    --ring: 42 89% 63%; /* Yellow #F5BC4C */
     --border: 302 53% 85%;
     --input: 302 53% 85%;
     --ring: 302 53% 37%;

@@ -53,7 +53,7 @@ export default async function Navbar() {
     : publicRoutes;
 
   return (
-    <div className="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:px-14">
+    <div className="sticky top-0 z-50 flex h-20 items-center justify-between bg-primary px-6 lg:px-14">
       {/* Logo */}
       <Link href={"/"} className="flex shrink-0 items-center gap-2">
         <Image
@@ -63,7 +63,7 @@ export default async function Navbar() {
           height={40}
           className="h-10 w-10"
         />
-        <h1 className="text-2xl font-bold text-primary">MCAA</h1>
+        <h1 className="text-2xl font-bold text-primary-foreground">MCAA</h1>
       </Link>
 
       {/* Right side navigation and user menu */}
@@ -77,9 +77,9 @@ export default async function Navbar() {
                   <NavigationMenuLink
                     className={cn(
                       navigationMenuTriggerStyle({
-                        underlineColor: "background",
                         padding: "default",
                       }),
+                      "text-white hover:bg-white/10 hover:text-white",
                     )}
                   >
                     {route.title}
@@ -97,7 +97,7 @@ export default async function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-9 w-9 rounded-full"
+                  className="relative h-9 w-9 rounded-full text-white hover:bg-white/10"
                 >
                   {user.image ? (
                     <Avatar className="h-9 w-9">
@@ -110,7 +110,7 @@ export default async function Navbar() {
                       </AvatarFallback>
                     </Avatar>
                   ) : (
-                    <UserCircle className="h-6 w-6 text-primary" />
+                    <UserCircle className="h-6 w-6 text-white" />
                   )}
                   {!user.isVerified && (
                     <span className="absolute -right-1 -top-1 h-3 w-3">
@@ -179,7 +179,12 @@ export default async function Navbar() {
             </DropdownMenu>
           ) : (
             <Link href="/login">
-              <Button size="sm">Log In</Button>
+              <Button
+                size="sm"
+                className="border border-white/20 bg-[#383590] text-white hover:bg-white/10"
+              >
+                Log In
+              </Button>
             </Link>
           )}
         </div>

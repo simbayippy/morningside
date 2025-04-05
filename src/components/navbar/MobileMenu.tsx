@@ -34,7 +34,7 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
 
   return (
     <div className="sm:hidden">
-      <button onClick={toggleMenu} className="p-2">
+      <button onClick={toggleMenu} className="p-2 text-white">
         {menuOpen ? (
           <XMarkIcon className="h-6 w-6" />
         ) : (
@@ -43,13 +43,13 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
       </button>
 
       {menuOpen && (
-        <div className="absolute left-0 top-16 z-50 w-full border-b bg-background px-6 py-4">
+        <div className="absolute left-0 top-16 z-50 w-full border-b bg-[#383590] px-6 py-4">
           {routes.map((route, index) => (
             <Link
               key={index}
               href={route.href}
               onClick={toggleMenu}
-              className="block py-2 text-sm text-muted-foreground hover:text-accent-foreground"
+              className="block py-2 text-sm text-white hover:text-white/80"
             >
               {route.title}
             </Link>
@@ -58,7 +58,7 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
             {user ? (
               <>
                 <div className="flex flex-col gap-1">
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-white">
                     {user.name ?? user.email}
                   </span>
                   <div className="flex flex-wrap gap-1">
@@ -98,7 +98,11 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
                   </div>
                 </div>
                 <form action={signOut}>
-                  <Button variant="secondary" size="sm" className="w-full">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full border border-white/20 text-white hover:bg-white/10 hover:text-white"
+                  >
                     Log Out
                   </Button>
                 </form>
@@ -106,12 +110,20 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
             ) : (
               <>
                 <Link href="/login" onClick={toggleMenu}>
-                  <Button variant="secondary" size="sm" className="w-full">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full border border-white/20 text-white hover:bg-white/10 hover:text-white"
+                  >
                     Log In
                   </Button>
                 </Link>
                 <Link href="/signup" onClick={toggleMenu}>
-                  <Button variant="default" size="sm" className="w-full">
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full bg-white text-[#383590] hover:bg-white/90"
+                  >
                     Sign Up
                   </Button>
                 </Link>
