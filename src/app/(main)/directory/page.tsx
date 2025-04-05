@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { api } from "@/trpc/react";
 import { Loader2, Search, SlidersHorizontal, X } from "lucide-react";
-import { type MemberWithUser } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MemberCard } from "./components/MemberCard";

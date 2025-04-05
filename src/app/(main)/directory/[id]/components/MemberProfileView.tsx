@@ -1,14 +1,13 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Mail,
   GraduationCap,
   Briefcase,
   BookOpen,
-  CalendarDays,
   ArrowLeft,
+  Building2,
 } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import Link from "next/link";
@@ -40,159 +39,141 @@ export function MemberProfileView({ member }: MemberProfileViewProps) {
   return (
     <div className="space-y-8">
       {/* Back Button */}
-      <Button variant="ghost" size="sm" asChild>
-        <Link href="/directory">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Directory
-        </Link>
-      </Button>
+      <div className="flex items-center justify-between">
+        <Button variant="ghost" size="sm" asChild className="text-[#383590]">
+          <Link href="/directory" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Directory
+          </Link>
+        </Button>
+        <h1 className="text-2xl font-bold text-[#383590]">Alumni Directory</h1>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={member.image ?? undefined} />
-              <AvatarFallback className="text-lg">
-                {getInitials(member.name ?? "")}
-              </AvatarFallback>
-            </Avatar>
+      <div className="rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
+        {/* Header Section */}
+        <div className="flex items-start gap-6">
+          <Avatar className="h-24 w-24">
+            <AvatarImage src={member.image ?? undefined} />
+            <AvatarFallback className="text-xl">
+              {getInitials(member.name ?? "")}
+            </AvatarFallback>
+          </Avatar>
+          <div className="space-y-4">
             <div>
-              <CardTitle className="text-2xl">{member.name}</CardTitle>
+              <h2 className="text-3xl font-bold text-[#383590]">
+                {member.name}
+              </h2>
               <div className="mt-2 flex flex-wrap gap-2">
                 {member.membershipType && (
-                  <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800">
+                  <span className="rounded-full bg-[#F5BC4C]/10 px-3 py-1 text-sm font-medium text-[#F5BC4C]">
                     {member.membershipType.replace("_", " ")}
                   </span>
                 )}
                 {member.isVerified && (
-                  <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
                     Verified Member
                   </span>
                 )}
               </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-8">
-            {/* Bio */}
-            {member.bio && (
-              <div className="space-y-2">
-                <h3 className="font-medium text-gray-900">About</h3>
-                <p className="text-gray-600">{member.bio}</p>
-              </div>
-            )}
+        </div>
 
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="font-medium text-gray-900">Contact Information</h3>
-              <div className="grid gap-4 md:grid-cols-2">
-                {/* Email */}
-                <div className="flex items-center gap-3">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Email</p>
-                    <p className="text-gray-900">{member.email}</p>
-                  </div>
-                </div>
-                {/* Chinese Name */}
-                {member.chineseName && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Chinese Name
-                    </p>
-                    <p className="text-gray-900">{member.chineseName}</p>
-                  </div>
-                )}
-                {/* Preferred Name */}
-                {member.preferredName && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Preferred Name
-                    </p>
-                    <p className="text-gray-900">{member.preferredName}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Academic Information */}
-            <div className="space-y-4">
-              <h3 className="font-medium text-gray-900">
-                Academic Information
-              </h3>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="flex items-center gap-3">
-                  <GraduationCap className="h-5 w-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Faculty</p>
-                    <p className="text-gray-900">{member.faculty}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <BookOpen className="h-5 w-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Major</p>
-                    <p className="text-gray-900">{member.major}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CalendarDays className="h-5 w-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Class of
-                    </p>
-                    <p className="text-gray-900">{member.class}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Professional Information */}
-            {(member.employer ?? member.position ?? member.industry) && (
-              <div className="space-y-4">
-                <h3 className="font-medium text-gray-900">
-                  Professional Information
-                </h3>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {(member.employer ?? member.position) && (
-                    <div className="flex items-center gap-3">
-                      <Briefcase className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">
-                          Current Role
-                        </p>
-                        <p className="text-gray-900">
-                          {member.position && (
-                            <span className="font-medium">
-                              {member.position}
-                            </span>
-                          )}
-                          {member.position && member.employer && " at "}
-                          {member.employer}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {member.industry && (
-                    <div className="flex items-center gap-3">
-                      <div className="h-5 w-5 rounded-full bg-purple-100 p-1">
-                        <Briefcase className="h-3 w-3 text-purple-600" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">
-                          Industry
-                        </p>
-                        <p className="text-gray-900">{member.industry}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+        {/* About Section */}
+        {member.bio && (
+          <div className="mt-8">
+            <h3 className="mb-3 text-lg font-semibold text-[#383590]">About</h3>
+            <p className="text-[#383590]/70">{member.bio}</p>
           </div>
-        </CardContent>
-      </Card>
+        )}
+
+        {/* Contact Information */}
+        <div className="mt-8">
+          <h3 className="mb-3 text-lg font-semibold text-[#383590]">
+            Contact Information
+          </h3>
+          <div className="grid gap-4">
+            <div className="flex items-center gap-3">
+              <Mail className="h-5 w-5 text-[#F5BC4C]" />
+              <div>
+                <p className="text-sm font-medium text-[#383590]/70">Email</p>
+                <p className="text-[#383590]">{member.email}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Academic Information */}
+        <div className="mt-8">
+          <h3 className="mb-3 text-lg font-semibold text-[#383590]">
+            Academic Information
+          </h3>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="flex items-center gap-3">
+              <GraduationCap className="h-5 w-5 text-[#F5BC4C]" />
+              <div>
+                <p className="text-sm font-medium text-[#383590]/70">Faculty</p>
+                <p className="text-[#383590]">{member.faculty}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <BookOpen className="h-5 w-5 text-[#F5BC4C]" />
+              <div>
+                <p className="text-sm font-medium text-[#383590]/70">Major</p>
+                <p className="text-[#383590]">{member.major}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Building2 className="h-5 w-5 text-[#F5BC4C]" />
+              <div>
+                <p className="text-sm font-medium text-[#383590]/70">
+                  Class of
+                </p>
+                <p className="text-[#383590]">{member.class}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Professional Information */}
+        {(member.employer ?? member.position ?? member.industry) && (
+          <div className="mt-8">
+            <h3 className="mb-3 text-lg font-semibold text-[#383590]">
+              Professional Information
+            </h3>
+            <div className="grid gap-6 md:grid-cols-2">
+              {(member.employer ?? member.position) && (
+                <div className="flex items-center gap-3">
+                  <Briefcase className="h-5 w-5 text-[#F5BC4C]" />
+                  <div>
+                    <p className="text-sm font-medium text-[#383590]/70">
+                      Current Role
+                    </p>
+                    <p className="text-[#383590]">
+                      {member.position && (
+                        <span className="font-medium">{member.position}</span>
+                      )}
+                      {member.position && member.employer && " at "}
+                      {member.employer}
+                    </p>
+                  </div>
+                </div>
+              )}
+              {member.industry && (
+                <div className="flex items-center gap-3">
+                  <Building2 className="h-5 w-5 text-[#F5BC4C]" />
+                  <div>
+                    <p className="text-sm font-medium text-[#383590]/70">
+                      Industry
+                    </p>
+                    <p className="text-[#383590]">{member.industry}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

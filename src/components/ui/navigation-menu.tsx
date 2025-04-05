@@ -45,11 +45,6 @@ const navigationMenuTriggerStyle = cva(
     "group inline-flex w-max items-center justify-center rounded-md bg-transparent text-sm font-medium",
     "transition-colors duration-300 ease-in-out",
     "focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-    "relative overflow-hidden",
-    "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full",
-    "after:transform after:scale-x-0 after:transition-transform after:duration-300 after:ease-in-out",
-    "hover:after:scale-x-100",
-    "after:bg-primary",
     "text-muted-foreground",
     "hover:text-primary",
     "data-[active]:text-primary data-[state=open]:text-primary",
@@ -57,8 +52,8 @@ const navigationMenuTriggerStyle = cva(
   {
     variants: {
       underlineColor: {
-        foreground: "after:bg-foreground",
-        background: "after:text-muted-foreground",
+        foreground: "",
+        background: "",
       },
       padding: {
         default: "mx-2 px-2 py-2",
