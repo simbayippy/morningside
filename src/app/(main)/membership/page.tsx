@@ -72,20 +72,19 @@ const membershipTypes: Record<MembershipType, MembershipTypeInfo> = {
 
 export default async function MembershipPage() {
   const currentUser = await getCurrentUser();
-  console.log(currentUser);
   const membership = currentUser ? await api.member.getMyMembership() : null;
   if (!currentUser) {
     redirect("/login");
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-[1200px] px-8 py-16">
         <div className="mb-12">
-          <h1 className="font-mono text-4xl font-bold text-gray-900">
+          <h1 className="font-mono text-4xl font-bold text-[#383590]">
             Alumni Membership
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-gray-600">
+          <p className="mt-4 max-w-2xl text-lg text-[#383590]/70">
             Join our vibrant alumni community and enjoy exclusive benefits as a
             member of the Morningside College Alumni Association.
           </p>
@@ -94,9 +93,11 @@ export default async function MembershipPage() {
         {/* Current Membership Status */}
         {membership ? (
           <div className="mb-12">
-            <Card>
+            <Card className="border-[#F5BC4C]/20">
               <CardHeader>
-                <CardTitle>Your Membership Status</CardTitle>
+                <CardTitle className="text-[#383590]">
+                  Your Membership Status
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4">
@@ -105,7 +106,7 @@ export default async function MembershipPage() {
                       "rounded-full p-3",
                       membership.status === "REJECTED"
                         ? "bg-red-100"
-                        : "bg-purple-100",
+                        : "bg-[#F5BC4C]/10",
                     )}
                   >
                     {React.createElement(
@@ -119,20 +120,20 @@ export default async function MembershipPage() {
                           "h-6 w-6",
                           membership.status === "REJECTED"
                             ? "text-red-600"
-                            : "text-purple-600",
+                            : "text-[#F5BC4C]",
                         ),
                       },
                     )}
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">
+                    <h3 className="text-lg font-semibold text-[#383590]">
                       {membership.status === "REJECTED"
                         ? "Application Rejected"
                         : membership.isVerified
                           ? membershipTypes[membership.membershipType].title
                           : "Pending Member"}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[#383590]/70">
                       {membership.status === "REJECTED"
                         ? "Application rejected on "
                         : "Application submitted on "}{" "}
@@ -158,7 +159,9 @@ export default async function MembershipPage() {
                     </div>
                     <div>
                       <Link href="/membership/apply">
-                        <Button>Apply Again</Button>
+                        <Button className="bg-[#F5BC4C] text-white hover:bg-[#F5BC4C]/90">
+                          Apply Again
+                        </Button>
                       </Link>
                     </div>
                   </div>
@@ -177,17 +180,21 @@ export default async function MembershipPage() {
           </div>
         ) : (
           <div className="mb-12">
-            <Card>
+            <Card className="border-[#F5BC4C]/20">
               <CardHeader>
-                <CardTitle>Join Our Alumni Association</CardTitle>
+                <CardTitle className="text-[#383590]">
+                  Join Our Alumni Association
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-gray-600">
+                <p className="mb-4 text-[#383590]/70">
                   You are not currently a member. Apply now to access exclusive
                   benefits and stay connected with your alma mater.
                 </p>
                 <Link href="/membership/apply">
-                  <Button>Apply for Membership</Button>
+                  <Button className="bg-[#F5BC4C] text-white hover:bg-[#F5BC4C]/90">
+                    Apply for Membership
+                  </Button>
                 </Link>
               </CardContent>
             </Card>
@@ -196,33 +203,34 @@ export default async function MembershipPage() {
 
         {/* Membership Types */}
         <div>
-          <h2 className="mb-8 font-mono text-2xl font-bold text-gray-900">
+          <h2 className="mb-8 font-mono text-2xl font-bold text-[#383590]">
             Membership Types
           </h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {Object.entries(membershipTypes).map(([type, info]) => (
-              <Card key={type}>
+              <Card key={type} className="border-[#F5BC4C]/20">
                 <CardHeader>
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
-                    {React.createElement(info.icon, {
-                      className: "h-6 w-6 text-purple-600",
-                    })}
+                  <div className="mb-4 flex items-center gap-4">
+                    <div className="rounded-full bg-[#F5BC4C]/10 p-3">
+                      {React.createElement(info.icon, {
+                        className: "h-6 w-6 text-[#F5BC4C]",
+                      })}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg text-[#383590]">
+                        {info.title}
+                      </CardTitle>
+                      <p className="text-sm text-[#383590]/70">{info.fee}</p>
+                    </div>
                   </div>
-                  <CardTitle className="text-xl">{info.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="mb-2 text-sm text-gray-600">
+                  <p className="text-sm text-[#383590]/70">
                     {info.description}
                   </p>
-                  <p className="mb-4 font-semibold text-purple-600">
-                    {info.fee}
-                  </p>
-                  <ul className="space-y-2 text-sm text-gray-600">
+                </CardHeader>
+                <CardContent>
+                  <ul className="list-inside list-disc space-y-2 text-sm text-[#383590]/70">
                     {info.benefits.map((benefit, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 rounded-full bg-purple-600" />
-                        {benefit}
-                      </li>
+                      <li key={index}>{benefit}</li>
                     ))}
                   </ul>
                 </CardContent>

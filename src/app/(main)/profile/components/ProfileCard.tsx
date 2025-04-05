@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +7,7 @@ import {
   Briefcase,
   Clock,
   BookOpen,
-  CalendarDays,
+  Building2,
 } from "lucide-react";
 import { getInitials, formatDate } from "@/lib/utils";
 
@@ -39,174 +38,168 @@ interface ProfileCardProps {
 
 export function ProfileCard({ profile, onEditClick }: ProfileCardProps) {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={profile.image ?? undefined} />
-              <AvatarFallback className="text-lg">
-                {getInitials(profile.englishName ?? profile.name ?? "")}
-              </AvatarFallback>
-            </Avatar>
+    <div className="rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
+      {/* Header Section */}
+      <div className="flex items-start justify-between">
+        <div className="flex items-start gap-6">
+          <Avatar className="h-24 w-24">
+            <AvatarImage src={profile.image ?? undefined} />
+            <AvatarFallback className="text-xl">
+              {getInitials(profile.englishName ?? profile.name ?? "")}
+            </AvatarFallback>
+          </Avatar>
+          <div className="space-y-4">
             <div>
-              <div className="space-y-1">
-                <CardTitle className="text-2xl">
-                  {profile.englishName ?? profile.name}
-                </CardTitle>
-                {profile.chineseName && (
-                  <p className="text-lg text-gray-600">{profile.chineseName}</p>
+              <h2 className="text-3xl font-bold text-[#383590]">
+                {profile.englishName ?? profile.name}
+              </h2>
+              {profile.chineseName && (
+                <p className="mt-1 text-lg text-[#383590]/70">
+                  {profile.chineseName}
+                </p>
+              )}
+              {profile.preferredName &&
+                profile.preferredName !== profile.englishName && (
+                  <p className="text-sm text-[#383590]/60">
+                    Preferred: {profile.preferredName}
+                  </p>
                 )}
-                {profile.preferredName &&
-                  profile.preferredName !== profile.englishName && (
-                    <p className="text-sm text-gray-500">
-                      Preferred: {profile.preferredName}
-                    </p>
-                  )}
-              </div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {profile.isAdmin && (
-                  <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                  <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
                     Super Admin
                   </span>
                 )}
                 {profile.membershipType && (
-                  <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800">
+                  <span className="rounded-full bg-[#F5BC4C]/10 px-3 py-1 text-sm font-medium text-[#F5BC4C]">
                     {profile.membershipType.replace("_", " ")}
                   </span>
                 )}
                 {profile.isVerified && (
-                  <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
                     Verified Member
                   </span>
                 )}
               </div>
             </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onEditClick}
-            className="flex items-center gap-2"
-          >
-            <Pencil className="h-4 w-4" />
-            Edit Profile
-          </Button>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-8">
-          {/* Bio */}
-          <div className="space-y-2">
-            <h3 className="font-medium text-gray-900">About</h3>
-            {profile.bio ? (
-              <p className="text-gray-600">{profile.bio}</p>
-            ) : (
-              <p className="italic text-gray-400">
-                No bio provided yet. Click edit to add one.
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onEditClick}
+          className="flex items-center gap-2 border-[#F5BC4C] text-[#F5BC4C] hover:bg-[#F5BC4C]/10"
+        >
+          <Pencil className="h-4 w-4" />
+          Edit Profile
+        </Button>
+      </div>
+
+      {/* About Section */}
+      <div className="mt-8">
+        <h3 className="mb-3 text-lg font-semibold text-[#383590]">About</h3>
+        {profile.bio ? (
+          <p className="text-[#383590]/70">{profile.bio}</p>
+        ) : (
+          <p className="italic text-[#383590]/50">
+            No bio provided yet. Click edit to add one.
+          </p>
+        )}
+      </div>
+
+      {/* Contact Information */}
+      <div className="mt-8">
+        <h3 className="mb-3 text-lg font-semibold text-[#383590]">
+          Contact Information
+        </h3>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex items-center gap-3">
+            <Mail className="h-5 w-5 text-[#F5BC4C]" />
+            <div>
+              <p className="text-sm font-medium text-[#383590]/70">Email</p>
+              <p className="text-[#383590]">{profile.email}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Clock className="h-5 w-5 text-[#F5BC4C]" />
+            <div>
+              <p className="text-sm font-medium text-[#383590]/70">
+                Member Since
               </p>
+              <p className="text-[#383590]">{formatDate(profile.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Academic Information */}
+      <div className="mt-8">
+        <h3 className="mb-3 text-lg font-semibold text-[#383590]">
+          Academic Information
+        </h3>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex items-center gap-3">
+            <GraduationCap className="h-5 w-5 text-[#F5BC4C]" />
+            <div>
+              <p className="text-sm font-medium text-[#383590]/70">Faculty</p>
+              <p className="text-[#383590]">{profile.faculty}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <BookOpen className="h-5 w-5 text-[#F5BC4C]" />
+            <div>
+              <p className="text-sm font-medium text-[#383590]/70">Major</p>
+              <p className="text-[#383590]">{profile.major}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Building2 className="h-5 w-5 text-[#F5BC4C]" />
+            <div>
+              <p className="text-sm font-medium text-[#383590]/70">Class of</p>
+              <p className="text-[#383590]">{profile.class}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Professional Information */}
+      {(profile.employer ?? profile.position ?? profile.industry) && (
+        <div className="mt-8">
+          <h3 className="mb-3 text-lg font-semibold text-[#383590]">
+            Professional Information
+          </h3>
+          <div className="grid gap-6 md:grid-cols-2">
+            {(profile.employer ?? profile.position) && (
+              <div className="flex items-center gap-3">
+                <Briefcase className="h-5 w-5 text-[#F5BC4C]" />
+                <div>
+                  <p className="text-sm font-medium text-[#383590]/70">
+                    Current Role
+                  </p>
+                  <p className="text-[#383590]">
+                    {profile.position && (
+                      <span className="font-medium">{profile.position}</span>
+                    )}
+                    {profile.position && profile.employer && " at "}
+                    {profile.employer}
+                  </p>
+                </div>
+              </div>
+            )}
+            {profile.industry && (
+              <div className="flex items-center gap-3">
+                <Building2 className="h-5 w-5 text-[#F5BC4C]" />
+                <div>
+                  <p className="text-sm font-medium text-[#383590]/70">
+                    Industry
+                  </p>
+                  <p className="text-[#383590]">{profile.industry}</p>
+                </div>
+              </div>
             )}
           </div>
-
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <h3 className="font-medium text-gray-900">Basic Information</h3>
-            <div className="grid gap-4 md:grid-cols-2">
-              {/* Email */}
-              <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p className="text-gray-900">{profile.email}</p>
-                </div>
-              </div>
-              {/* Member Since */}
-              <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">
-                    Member Since
-                  </p>
-                  <p className="text-gray-900">
-                    {formatDate(profile.createdAt)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Academic Information */}
-          <div className="space-y-4">
-            <h3 className="font-medium text-gray-900">Academic Information</h3>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="flex items-center gap-3">
-                <GraduationCap className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Faculty</p>
-                  <p className="text-gray-900">{profile.faculty}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <BookOpen className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Major</p>
-                  <p className="text-gray-900">{profile.major}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <CalendarDays className="h-5 w-5 text-gray-400" />
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Class of</p>
-                  <p className="text-gray-900">{profile.class}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Professional Information */}
-          {(profile.employer ?? profile.position ?? profile.industry) && (
-            <div className="space-y-4">
-              <h3 className="font-medium text-gray-900">
-                Professional Information
-              </h3>
-              <div className="grid gap-4 md:grid-cols-2">
-                {(profile.employer ?? profile.position) && (
-                  <div className="flex items-center gap-3">
-                    <Briefcase className="h-5 w-5 text-gray-400" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        Current Role
-                      </p>
-                      <p className="text-gray-900">
-                        {profile.position && (
-                          <span className="font-medium">
-                            {profile.position}
-                          </span>
-                        )}
-                        {profile.position && profile.employer && " at "}
-                        {profile.employer}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {profile.industry && (
-                  <div className="flex items-center gap-3">
-                    <div className="h-5 w-5 rounded-full bg-purple-100 p-1">
-                      <Briefcase className="h-3 w-3 text-purple-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        Industry
-                      </p>
-                      <p className="text-gray-900">{profile.industry}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }

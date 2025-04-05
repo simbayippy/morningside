@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,30 +54,35 @@ export default function Login() {
 
   if (isVerificationSent) {
     return (
-      <div className="flex">
-        <div className="hidden h-screen grow bg-secondary/15 lg:block" />
-        <div className="h-screen w-full bg-background lg:w-1/2">
+      <div
+        className="flex h-screen overflow-hidden"
+        style={{ height: "calc(100vh - 5rem)" }}
+      >
+        <div className="hidden h-full grow bg-[#F5BC4C]/10 lg:block" />
+        <div className="h-full w-full bg-background lg:w-1/2">
           <div className="flex h-full items-center justify-center">
-            <div className="w-full max-w-md p-8">
+            <div className="w-full max-w-md px-8">
               <div className="flex flex-col items-center space-y-4">
-                <CheckCircle2 className="h-12 w-12 text-muted-foreground" />
-                <h1 className="text-2xl font-semibold">
+                <CheckCircle2 className="h-12 w-12 text-[#F5BC4C]" />
+                <h1 className="text-2xl font-bold text-[#383590]">
                   Check your email to confirm
                 </h1>
-                <p className="text-center text-muted-foreground">
+                <p className="text-center text-[#383590]/70">
                   You&apos;ve successfully signed up. Please check your email (
-                  {verificationEmail}) to confirm your account before signing in
-                  to the Supabase dashboard. The confirmation link expires in 10
-                  minutes.
+                  {verificationEmail}) to confirm your account. The confirmation
+                  link expires in 10 minutes.
                 </p>
-                <div className="flex items-center gap-2 py-4">
-                  <hr className="w-full" />
-                  <p className="text-xs text-muted-foreground">or</p>
-                  <hr className="w-full" />
+                <div className="my-8 flex w-full items-center gap-2">
+                  <hr className="flex-1 border-[#F5BC4C]/10" />
+                  <p className="text-xs text-[#383590]/50">or</p>
+                  <hr className="flex-1 border-[#F5BC4C]/10" />
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-[#383590]/70">
                   Have an account?{" "}
-                  <Link href="/login" className="underline">
+                  <Link
+                    href="/login"
+                    className="font-medium text-[#F5BC4C] hover:text-[#F5BC4C]/90"
+                  >
                     Sign In Now
                   </Link>
                 </p>
@@ -91,33 +95,43 @@ export default function Login() {
   }
 
   return (
-    <div className="flex">
-      <div className="hidden h-screen grow bg-secondary/15 lg:block" />
-      <div className="h-screen w-full bg-background lg:w-1/2">
+    <div
+      className="flex h-screen overflow-hidden"
+      style={{ height: "calc(100vh - 5rem)" }}
+    >
+      <div className="hidden h-full grow bg-[#F5BC4C]/10 lg:block" />
+      <div className="h-full w-full bg-background lg:w-1/2">
         <div className="flex h-full items-center justify-center">
-          <div className="w-full max-w-md p-8">
-            <h1 className="mb-4 text-2xl font-semibold">Sign up</h1>
+          <div className="w-full max-w-md px-8">
+            <h1 className="mb-2 text-3xl font-bold text-[#383590]">
+              Create Account
+            </h1>
+            <p className="mb-8 text-[#383590]/70">
+              Sign up to get started with your alumni journey
+            </p>
+
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex w-full flex-1 flex-col justify-center gap-2 text-muted-foreground animate-in"
+                className="flex w-full flex-1 flex-col justify-center gap-4 animate-in"
               >
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-muted-foreground">
+                      <FormLabel className="text-[#383590]">
                         Email Address
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Your email address"
+                          placeholder="Enter your email"
                           {...field}
                           autoComplete="on"
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -126,41 +140,52 @@ export default function Login() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-muted-foreground">
-                        Password
-                      </FormLabel>
+                      <FormLabel className="text-[#383590]">Password</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Your password"
+                          placeholder="Enter your password"
                           type="password"
                           autoComplete="on"
                           {...field}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
-                <Button variant="default" className="my-3 w-full" type="submit">
+                <Button
+                  type="submit"
+                  className="mt-2 bg-[#F5BC4C] text-white hover:bg-[#F5BC4C]/90"
+                >
                   Sign up
                 </Button>
                 {error && (
-                  <div className="mb-3 mt-1 rounded-md border border-destructive bg-destructive/10 p-3">
-                    <p className="text-center text-sm font-medium text-destructive">
+                  <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                    <p className="text-center text-sm font-medium text-red-800">
                       {error}
                     </p>
                   </div>
                 )}
               </form>
             </Form>
-            <div className="flex items-center gap-2 py-4">
-              <hr className="w-full" />
-              <p className="text-xs text-muted-foreground">OR</p>
-              <hr className="w-full" />
+
+            <div className="my-8 flex items-center gap-2">
+              <hr className="flex-1 border-[#F5BC4C]/10" />
+              <p className="text-xs text-[#383590]/50">OR</p>
+              <hr className="flex-1 border-[#F5BC4C]/10" />
             </div>
+
             <OauthButton provider={"google"} />
-            <p className="py-4 text-center text-sm text-muted-foreground underline">
-              <Link href="/login">Already have an account? Sign in</Link>
+
+            <p className="mt-8 text-center text-sm text-[#383590]/70">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-medium text-[#F5BC4C] hover:text-[#F5BC4C]/90"
+              >
+                Sign in
+              </Link>
             </p>
           </div>
         </div>

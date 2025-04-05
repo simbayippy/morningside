@@ -85,10 +85,10 @@ export function EditProfileDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto border-[#F5BC4C]/20 sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-[#383590]">Edit Profile</DialogTitle>
+          <DialogDescription className="text-[#383590]/70">
             Update your profile information here. Click save when you&apos;re
             done.
           </DialogDescription>
@@ -120,6 +120,7 @@ export function EditProfileDialog({
                     onClick={() =>
                       document.getElementById("avatar-upload")?.click()
                     }
+                    className="border-[#F5BC4C] text-[#F5BC4C] hover:bg-[#F5BC4C]/10"
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     Upload Photo
@@ -133,15 +134,18 @@ export function EditProfileDialog({
                   name="englishName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>English Name</FormLabel>
+                      <FormLabel className="text-[#383590]">
+                        English Name
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your English name"
                           {...field}
                           value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -151,15 +155,18 @@ export function EditProfileDialog({
                   name="chineseName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Chinese Name</FormLabel>
+                      <FormLabel className="text-[#383590]">
+                        Chinese Name
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your Chinese name"
                           {...field}
                           value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -169,15 +176,18 @@ export function EditProfileDialog({
                   name="preferredName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Preferred Name</FormLabel>
+                      <FormLabel className="text-[#383590]">
+                        Preferred Name
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your preferred name"
                           {...field}
                           value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -187,16 +197,16 @@ export function EditProfileDialog({
                   name="bio"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Bio</FormLabel>
+                      <FormLabel className="text-[#383590]">Bio</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Tell us about yourself"
-                          className="min-h-[100px] resize-none"
+                          className="min-h-[100px] resize-none border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                           {...field}
                           value={field.value ?? ""}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -208,16 +218,19 @@ export function EditProfileDialog({
                   name="class"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Class</FormLabel>
+                      <FormLabel className="text-[#383590]">
+                        Class Year
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           placeholder="Enter your graduation year"
                           {...field}
                           value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -227,28 +240,34 @@ export function EditProfileDialog({
                   name="faculty"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Faculty</FormLabel>
+                      <FormLabel className="text-[#383590]">Faculty</FormLabel>
                       <Select
-                        onValueChange={(value) => {
+                        onValueChange={(value: string) => {
                           field.onChange(value);
                           setSelectedFaculty(value as Faculty);
                         }}
-                        defaultValue={field.value ?? undefined}
+                        value={field.value ?? undefined}
                       >
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select faculty" />
+                          <SelectTrigger className="border-[#F5BC4C]/20 text-[#383590] focus:ring-[#F5BC4C]">
+                            <SelectValue placeholder="Select your faculty" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {Object.keys(FACULTIES).map((faculty) => (
-                            <SelectItem key={faculty} value={faculty}>
-                              {faculty}
-                            </SelectItem>
-                          ))}
+                          {Object.entries(FACULTIES).map(
+                            ([faculty, majors]) => (
+                              <SelectItem
+                                key={faculty}
+                                value={faculty}
+                                className="text-[#383590]"
+                              >
+                                {faculty}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -258,33 +277,16 @@ export function EditProfileDialog({
                   name="major"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Major</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value ?? undefined}
-                        disabled={!selectedFaculty}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={
-                                selectedFaculty
-                                  ? "Select major"
-                                  : "Please select a faculty first"
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {selectedFaculty &&
-                            FACULTIES[selectedFaculty].map((major) => (
-                              <SelectItem key={major} value={major}>
-                                {major}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
+                      <FormLabel className="text-[#383590]">Major</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter your major"
+                          {...field}
+                          value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -296,15 +298,16 @@ export function EditProfileDialog({
                   name="employer"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Employer</FormLabel>
+                      <FormLabel className="text-[#383590]">Employer</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your employer"
                           {...field}
                           value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -314,15 +317,16 @@ export function EditProfileDialog({
                   name="position"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Position</FormLabel>
+                      <FormLabel className="text-[#383590]">Position</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your position"
                           {...field}
                           value={field.value ?? ""}
+                          className="border-[#F5BC4C]/20 focus-visible:ring-[#F5BC4C]"
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -332,25 +336,29 @@ export function EditProfileDialog({
                   name="industry"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Industry</FormLabel>
+                      <FormLabel className="text-[#383590]">Industry</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value ?? undefined}
+                        value={field.value ?? undefined}
                       >
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select industry" />
+                          <SelectTrigger className="border-[#F5BC4C]/20 text-[#383590] focus:ring-[#F5BC4C]">
+                            <SelectValue placeholder="Select your industry" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {INDUSTRY_OPTIONS.map((industry) => (
-                            <SelectItem key={industry} value={industry}>
+                            <SelectItem
+                              key={industry}
+                              value={industry}
+                              className="text-[#383590]"
+                            >
                               {industry}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
+                      <FormMessage className="text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -358,9 +366,19 @@ export function EditProfileDialog({
             </div>
 
             <DialogFooter>
-              <Button type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Save changes
+              <Button
+                type="submit"
+                disabled={isPending}
+                className="bg-[#F5BC4C] text-white hover:bg-[#F5BC4C]/90"
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </Button>
             </DialogFooter>
           </form>

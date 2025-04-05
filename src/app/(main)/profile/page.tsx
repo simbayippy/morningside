@@ -43,7 +43,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <div className="flex items-center gap-2 text-muted-foreground">
+        <div className="flex items-center gap-2 text-[#383590]/70">
           Loading...
         </div>
       </div>
@@ -76,10 +76,12 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-[1000px] px-8 py-16">
-        <ProfileHeader
-          title="My Profile"
-          description="View and manage your profile information"
-        />
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-[#383590]">My Profile</h1>
+          <p className="mt-1 text-[#383590]/70">
+            View and manage your profile information
+          </p>
+        </div>
 
         <div className="space-y-8">
           <ProfileCard profile={profile} onEditClick={handleEditClick} />
