@@ -96,7 +96,7 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
 
         {/* Image Carousel */}
         <div className="mb-12">
-          <Carousel className="w-full">
+          <Carousel className="relative w-full">
             <CarouselContent>
               {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */}
               {article.imageUrls.map((imageUrl, index) => (
@@ -115,8 +115,8 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="-left-12" />
-            <CarouselNext className="-right-12" />
+            <CarouselPrevious className="absolute -left-4 md:-left-12" />
+            <CarouselNext className="absolute -right-4 md:-right-12" />
           </Carousel>
         </div>
 

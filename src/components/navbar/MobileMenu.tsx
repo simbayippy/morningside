@@ -43,7 +43,7 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
       </button>
 
       {menuOpen && (
-        <div className="absolute left-0 top-16 z-50 w-full border-b bg-[#383590] px-6 py-4">
+        <div className="absolute left-0 top-16 z-50 w-full border-b border-white/10 bg-[#383590] px-6 py-4 shadow-lg">
           {routes.map((route, index) => (
             <Link
               key={index}
@@ -101,8 +101,7 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full border border-white/20 text-white hover:bg-white/10 hover:text-white"
-                  >
+                    className="w-full border border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white"                  >
                     Log Out
                   </Button>
                 </form>
@@ -113,7 +112,7 @@ export default function MobileMenu({ user, routes }: MobileMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full border border-white/20 text-white hover:bg-white/10 hover:text-white"
+                    className="w-full border border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white"
                   >
                     Log In
                   </Button>
