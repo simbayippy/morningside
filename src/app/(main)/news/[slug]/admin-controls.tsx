@@ -30,7 +30,7 @@ function LoadingOverlay() {
   );
 }
 
-export function AdminControls({ slug }: { slug: string }) {
+export function AdminControls({ slug, id }: { slug: string; id: string }) {
   const router = useRouter();
   const deleteArticle = api.news.delete.useMutation({
     onSuccess: () => {
@@ -49,7 +49,7 @@ export function AdminControls({ slug }: { slug: string }) {
     <>
       {deleteArticle.isPending && <LoadingOverlay />}
       <div className="mt-6 flex gap-4">
-        <Link href={`/admin/edit/news/${slug}`}>
+        <Link href={`/admin/edit/news/${slug}`} prefetch={false}>
           <Button variant="outline" className="gap-2">
             <Pencil className="h-4 w-4" />
             Edit Article
@@ -80,7 +80,7 @@ export function AdminControls({ slug }: { slug: string }) {
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
-                onClick={() => deleteArticle.mutate({ id: slug })}
+                onClick={() => deleteArticle.mutate({ id })}
                 disabled={deleteArticle.isPending}
                 className="gap-2 bg-destructive hover:bg-destructive/90"
               >

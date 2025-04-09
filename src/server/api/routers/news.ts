@@ -1,7 +1,6 @@
 import { z } from "zod";
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
   adminProcedure,
 } from "../trpc";
@@ -12,8 +11,9 @@ const newsInput = z.object({
   title: z.string().min(1),
   content: z.string().min(1),
   excerpt: z.string().min(1),
-  imageUrl: z.string().url(),
+  imageUrls: z.array(z.string().url()).min(1),
   slug: z.string().min(1),
+  publishedAt: z.date(),
 });
 
 export const newsRouter = createTRPCRouter({
@@ -89,11 +89,13 @@ export const newsRouter = createTRPCRouter({
 
   create: adminProcedure.input(newsInput).mutation(async ({ ctx, input }) => {
     try {
+      const { imageUrls, publishedAt, ...rest } = input;
       return await ctx.db.news.create({
         data: {
-          ...input,
+          ...rest,
+          imageUrls,
           authorId: ctx.session.user.id,
-          publishedAt: new Date(),
+          publishedAt,
         },
       });
     } catch (error) {
@@ -120,9 +122,14 @@ export const newsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
+        const { imageUrls, publishedAt, ...rest } = input.data;
         return await ctx.db.news.update({
           where: { id: input.id },
-          data: input.data,
+          data: {
+            ...rest,
+            imageUrls,
+            publishedAt,
+          },
         });
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {

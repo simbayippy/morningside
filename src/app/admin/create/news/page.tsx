@@ -25,20 +25,39 @@ export default function CreateNewsPage() {
 
   const onSubmit = async (values: NewsFormValues) => {
     try {
-      let imageUrl = values.imageUrl;
+      const imageUrls = values.imageUrls;
+      const finalImageUrls: string[] = [];
 
-      if (values.imageUrl instanceof File) {
-        const uploadResult = await uploadFile(values.imageUrl, "news");
-        imageUrl = uploadResult.url;
+      if (Array.isArray(imageUrls)) {
+        // Upload new files
+        const filesToUpload = imageUrls.filter((img): img is File => img instanceof File);
+        const uploadPromises = filesToUpload.map(file => uploadFile(file, "news"));
+        const uploadResults = await Promise.all(uploadPromises);
+        const uploadedUrls = uploadResults.map(result => result?.url ?? "").filter(Boolean);
+
+        // Build final array of URLs, replacing File objects with their uploaded URLs
+        let uploadedIndex = 0;
+        imageUrls.forEach(img => {
+          if (img instanceof File) {
+            const uploadedUrl = uploadedUrls[uploadedIndex++];
+            if (uploadedUrl) {
+              finalImageUrls.push(uploadedUrl);
+            }
+          } else if (typeof img === "string") {
+            finalImageUrls.push(img);
+          }
+        });
       }
 
       createNews.mutate({
         ...values,
-        imageUrl: imageUrl as string,
+        imageUrls: finalImageUrls,
         excerpt: values.summary,
+        publishedAt: values.publishedAt,
       });
     } catch (error) {
-      toast.error("Failed to upload image");
+      console.error("Upload error:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to upload images");
     }
   };
 

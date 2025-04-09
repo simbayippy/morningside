@@ -121,7 +121,7 @@ model News {
   slug        String   @unique // For URL-friendly identifiers
   content     String   @db.Text
   excerpt     String   @db.Text // Short description for previews
-  imageUrl    String
+  imageUrls   String[]
   publishedAt DateTime @default(now())
   featured    Boolean  @default(false)
   authorId    String

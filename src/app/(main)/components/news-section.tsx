@@ -21,7 +21,8 @@ export async function NewsSection() {
               {/* Left side - Image */}
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-muted md:w-2/5">
                 <Image
-                  src={item.imageUrl}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+                  src={item.imageUrls[0] ?? "/placeholder.jpg"}
                   alt={item.title}
                   fill
                   className="object-cover"

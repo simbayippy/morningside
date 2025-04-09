@@ -13,7 +13,7 @@ export default async function NewsPage() {
   ]);
 
   // Get the featured article and other articles
-  const featuredArticle = news[0];
+  const featuredArticle = news[0] ?? null;
   const otherArticles = news.slice(1);
 
   return (
@@ -42,7 +42,8 @@ export default async function NewsPage() {
               <Link href={`/news/${featuredArticle.slug}`} className="group block">
                 <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg">
                   <Image
-                    src={featuredArticle.imageUrl}
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                    src={featuredArticle.imageUrls[0] ?? "/placeholder.jpg"}
                     alt={featuredArticle.title}
                     fill
                     className="object-cover transition duration-300 group-hover:scale-105"
@@ -91,7 +92,8 @@ export default async function NewsPage() {
                     <article className="h-full">
                       <div className="relative aspect-[3/2] overflow-hidden rounded-lg">
                         <Image
-                          src={article.imageUrl}
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                          src={article.imageUrls[0] ?? "/placeholder.jpg"}
                           alt={article.title}
                           fill
                           className="object-cover transition duration-300 group-hover:scale-105"

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -16,10 +17,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUpload } from "@/components/ui/file-upload";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
 
 const newsFormSchema = z.object({
+  publishedAt: z.date({required_error: "Please select a date"}),
   title: z
     .string()
     .min(1, "Title is required")
@@ -40,7 +49,7 @@ const newsFormSchema = z.object({
     .string()
     .min(1, "Summary is required")
     .max(300, "Summary must be less than 300 characters"),
-  imageUrl: z.union([z.string().url(), z.instanceof(File)]),
+  imageUrls: z.array(z.union([z.string().url(), z.instanceof(File)])).min(1, "At least one image is required"),
 });
 
 export type NewsFormValues = z.infer<typeof newsFormSchema>;
@@ -51,7 +60,8 @@ interface NewsFormProps {
     slug: string;
     content: string;
     summary: string;
-    imageUrl: string;
+    imageUrls: string[];
+    publishedAt: Date;
   } | null;
   onSubmit: (values: NewsFormValues) => void;
   isSubmitting?: boolean;
@@ -71,7 +81,8 @@ export function NewsForm({
       slug: initialData?.slug ?? "",
       content: initialData?.content ?? "",
       summary: initialData?.summary ?? "",
-      imageUrl: initialData?.imageUrl ?? "",
+      imageUrls: initialData?.imageUrls ?? [],
+      publishedAt: initialData?.publishedAt ?? new Date(),
     },
   });
 
@@ -129,6 +140,48 @@ export function NewsForm({
 
               <FormField
                 control={form.control}
+                name="publishedAt"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Publish Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[240px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="summary"
                 render={({ field }) => (
                   <FormItem>
@@ -171,25 +224,61 @@ export function NewsForm({
 
             {/* Image Upload Section */}
             <div className="space-y-6">
-              <h2 className="font-semibold text-gray-900">Cover Image</h2>
+              <h2 className="font-semibold text-gray-900">Images</h2>
 
               <FormField
                 control={form.control}
-                name="imageUrl"
+                name="imageUrls"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
                       <div className="flex items-center gap-2">
                         <ImageIcon className="h-4 w-4 text-purple-600" />
-                        Upload Image
+                        Upload Images
                       </div>
                     </FormLabel>
                     <FormControl>
-                      <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
-                        <FileUpload
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
+                      <div className="space-y-4">
+                        <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
+                          <FileUpload
+                            value={field.value}
+                            onChange={field.onChange}
+                            multiple={true}
+                          />
+                        </div>
+                        {Array.isArray(field.value) && field.value.length > 0 && (
+                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                            {field.value.map((url, index) => (
+                              <div key={index} className="relative aspect-square overflow-hidden rounded-lg border border-gray-200">
+                                {typeof url === "string" ? (
+                                  <Image
+                                    src={url}
+                                    alt={`Image ${index + 1}`}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                ) : (
+                                  <div className="flex h-full items-center justify-center bg-gray-50 p-4">
+                                    <p className="text-center text-sm text-gray-500">{url.name}</p>
+                                  </div>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newValues = [...field.value];
+                                    newValues.splice(index, 1);
+                                    field.onChange(newValues);
+                                  }}
+                                  className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                  </svg>
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </FormControl>
                     <FormMessage />

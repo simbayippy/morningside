@@ -6,6 +6,13 @@ import { api } from "@/trpc/server";
 import { formatDate } from "@/lib/utils";
 import { isUserAdmin } from "@/lib/auth";
 import { AdminControls } from "./admin-controls";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface NewsPageProps {
   params: Promise<{
@@ -87,25 +94,46 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
           </div>
         </header>
 
-        {/* Featured Image */}
-        <div className="relative mb-12 aspect-[2/1] overflow-hidden rounded-lg">
-          <Image
-            src={article.imageUrl}
-            alt={article.title}
-            fill
-            priority
-            className="object-cover"
-          />
+        {/* Image Carousel */}
+        <div className="mb-12">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */}
+              {article.imageUrls.map((imageUrl, index) => (
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                <CarouselItem key={index}>
+                  <div className="relative aspect-[2/1] overflow-hidden rounded-lg">
+                    <Image
+                      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                      src={imageUrl}
+                      alt={`${article.title} - Image ${index + 1}`}
+                      fill
+                      priority={index === 0}
+                      className="object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-12" />
+            <CarouselNext className="-right-12" />
+          </Carousel>
         </div>
 
         {/* Article Content */}
-        <div className="prose prose-lg max-w-none prose-headings:text-[#383590] prose-a:text-[#383590] hover:prose-a:text-[#383590]/80">
-          {article.content}
+        <div className="prose prose-lg max-w-none prose-headings:text-[#383590] prose-a:text-[#383590] hover:prose-a:text-[#383590]/80 [&>p]:mb-8">
+          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */}
+          {article.content.split('\n').map((paragraph: string, index: number) => (
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+            paragraph.trim() && (
+              <p key={index}>{paragraph}</p>
+            )
+          ))}
         </div>
 
         {/* Admin Controls & Navigation */}
         <div className="mt-16 space-y-8">
-          {isAdmin && <AdminControls slug={article.slug} />}
+          {isAdmin && <AdminControls slug={article.slug} id={article.id} />}
           <div className="flex justify-center">
             <Link
               href="/news"
