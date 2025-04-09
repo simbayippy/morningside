@@ -11,7 +11,6 @@ import {
   XCircle,
   type LucideIcon,
 } from "lucide-react";
-import { redirect } from "next/navigation";
 import { type MembershipType } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
@@ -73,9 +72,6 @@ const membershipTypes: Record<MembershipType, MembershipTypeInfo> = {
 export default async function MembershipPage() {
   const currentUser = await getCurrentUser();
   const membership = currentUser ? await api.member.getMyMembership() : null;
-  if (!currentUser) {
-    redirect("/login");
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
