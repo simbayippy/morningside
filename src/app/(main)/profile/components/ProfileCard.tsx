@@ -42,8 +42,12 @@ export function ProfileCard({ profile, onEditClick }: ProfileCardProps) {
       {/* Header Section */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-6">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src={profile.image ?? undefined} />
+          <Avatar className="h-24 w-24 overflow-hidden">
+            <AvatarImage 
+              src={profile.image ?? undefined} 
+              alt="Profile picture" 
+              className="h-full w-full object-cover"
+            />
             <AvatarFallback className="text-xl">
               {getInitials(profile.englishName ?? profile.name ?? "")}
             </AvatarFallback>
