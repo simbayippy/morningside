@@ -393,7 +393,7 @@ export function MembershipForm({
             <FormField
               control={form.control}
               name="studentIdImage"
-              render={({ field }) => (
+              render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
                   <FormLabel>
                     <div className="flex items-center gap-2">
@@ -404,8 +404,19 @@ export function MembershipForm({
                   <FormControl>
                     <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
                       <FileUpload
-                        value={field.value}
-                        onChange={(files) => field.onChange(files[0])}
+                        value={value}
+                        onChange={(files) => {
+                          const file = files[0];
+                          if (file) {
+                            // If it's a File object, create a preview URL
+                            if (file instanceof File) {
+                              onChange(file);
+                            } else {
+                              // If it's a string (URL), use it directly
+                              onChange(file);
+                            }
+                          }
+                        }}
                         maxSizeInMB={5}
                       />
                     </div>
