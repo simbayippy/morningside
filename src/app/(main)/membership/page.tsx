@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  Award,
   Crown,
   GraduationCap,
   Users,
@@ -25,35 +26,35 @@ interface MembershipTypeInfo {
 const membershipTypes: Record<MembershipType, MembershipTypeInfo> = {
   STUDENT: {
     title: "Student Member",
-    description: "For current students of Morningside College",
+    description: "Who is enrolled as a student of the College and has not graduated",
     icon: GraduationCap,
     fee: "Free",
     benefits: [
-      "Access to alumni events",
-      "Student networking opportunities",
-      "Career guidance services",
-    ],
-  },
-  ORDINARY_II: {
-    title: "Ordinary Member II",
-    description: "For recent graduates within 3 years",
-    icon: Users,
-    fee: "HKD 500",
-    benefits: [
-      "All student benefits",
-      "Alumni directory access",
-      "Professional development resources",
+      "Participate in any activities for the membership class organized by the Association",
+      "Attend General Meetings and express opinions",
     ],
   },
   ORDINARY_I: {
     title: "Ordinary Member I",
-    description: "For graduates beyond 3 years",
+    description: "Who is a Graduate of the College",
+    icon: Award,
+    fee: "HKD 1000",
+    benefits: [
+      "Elect and to be elected as an Executive Committee member of the Association",
+      "Nominate and be nominated as an Executive Committee member of the Association",
+      "Propose resolutions and vote in the General Meeting",
+      "Propose amendments to the Constitution",
+      "Appoint a Proxy to attend a General Meeting",
+    ],
+  },
+  ORDINARY_II: {
+    title: "Ordinary Member II",
+    description: "Who has been a student of the College",
     icon: Users,
     fee: "HKD 500",
     benefits: [
-      "All Ordinary II benefits",
-      "Mentorship opportunities",
-      "Extended alumni services",
+      "All benefits of Ordinary Member I",
+      "Participate in the Election Committee",
     ],
   },
   HONORARY: {
