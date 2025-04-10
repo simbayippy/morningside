@@ -393,31 +393,36 @@ export function MembershipForm({
             <FormField
               control={form.control}
               name="studentIdImage"
-              render={({ field: { value, onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel>
-                    <div className="flex items-center gap-2">
-                      <GraduationCap className="h-4 w-4 text-purple-600" />
-                      Student ID Card Image*
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
-                      <FileUpload
-                        value={value instanceof File ? URL.createObjectURL(value) : value}
-                        onChange={(files) => {
-                          const file = files[0];
-                          if (file) {
-                            onChange(file);
-                          }
-                        }}
-                        maxSizeInMB={5}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field: { value, onChange, ...field } }) => {
+                // Create a preview URL for File objects
+                const previewUrl = value instanceof File ? URL.createObjectURL(value) : value;
+                
+                return (
+                  <FormItem>
+                    <FormLabel>
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4 text-purple-600" />
+                        Student ID Card Image*
+                      </div>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
+                        <FileUpload
+                          value={previewUrl}
+                          onChange={(files) => {
+                            const file = files[0];
+                            if (file) {
+                              onChange(file);
+                            }
+                          }}
+                          maxSizeInMB={5}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             {/* Professional Information Section */}

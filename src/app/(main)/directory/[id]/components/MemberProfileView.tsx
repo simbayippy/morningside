@@ -52,8 +52,12 @@ export function MemberProfileView({ member }: MemberProfileViewProps) {
       <div className="rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
         {/* Header Section */}
         <div className="flex items-start gap-6">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src={member.image ?? undefined} />
+          <Avatar className="h-24 w-24 overflow-hidden">
+            <AvatarImage 
+              src={member.image ?? undefined} 
+              alt={`${member.name}'s profile picture`}
+              className="h-full w-full object-cover"
+            />
             <AvatarFallback className="text-xl">
               {getInitials(member.name ?? "")}
             </AvatarFallback>
