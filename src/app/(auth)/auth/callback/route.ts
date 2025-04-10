@@ -24,59 +24,71 @@ export async function GET(request: NextRequest) {
       console.log("Successfully exchanged code for session");
 
       try {
-        // Wrap in transaction to handle dummy user migration
-        await prisma.$transaction(async (tx) => {
-          // Check for dummy user first
-          const dummyUser = await tx.user.findFirst({
-            where: {
+        // First check if user already exists in Prisma
+        const existingUser = await prisma.user.findUnique({
+          where: { id: session.user.id },
+        });
+
+        // If user already exists, just redirect to home
+        if (existingUser) {
+          console.log("User already exists, redirecting to home");
+          return Response.redirect(new URL("/", request.url));
+        }
+
+        // Check for dummy user before starting transaction
+        const dummyUser = await prisma.user.findFirst({
+          where: {
+            email: session.user.email!,
+            id: { startsWith: "dummy_" },
+          },
+          include: {
+            member: true,
+          },
+        });
+
+        // If no dummy user exists, create new user directly without transaction
+        if (!dummyUser) {
+          console.log("No dummy user found, creating new user");
+          const metadata = session.user.user_metadata as GoogleUserMetadata;
+          await prisma.user.create({
+            data: {
+              id: session.user.id,
               email: session.user.email!,
-              id: { startsWith: "dummy_" },
-            },
-            include: {
-              member: true,
+              name: metadata.full_name ?? null,
+              image: metadata.avatar_url ?? null,
+              isVerified: true,
+              isAdmin: false,
+              isSuperAdmin: false,
             },
           });
+          return Response.redirect(new URL("/", request.url));
+        }
 
-          // Store member data if exists
-          let memberData = null;
-          if (dummyUser?.member) {
-            memberData = { ...dummyUser.member };
-            
+        // If we get here, we need to migrate dummy user data
+        await prisma.$transaction(async (tx) => {
+          const memberData = dummyUser.member;
+          
+          if (memberData) {
             // Delete the old member and dummy user
             await tx.member.delete({
-              where: { id: dummyUser.member.id },
+              where: { id: memberData.id },
             });
-            await tx.user.delete({
-              where: { id: dummyUser.id },
-            });
-            console.log("Migrated dummy user data");
           }
-
-          // Check for existing non-dummy user
-          const existingUser = await tx.user.findFirst({
-            where: {
-              email: session.user.email!,
-              NOT: {
-                id: { startsWith: "dummy_" },
-              },
-            },
+          
+          await tx.user.delete({
+            where: { id: dummyUser.id },
           });
-
-          if (existingUser) {
-            throw new Error("Email already exists");
-          }
-
-          // Type check the user metadata
-          const metadata = session.user.user_metadata as GoogleUserMetadata;
+          console.log("Deleted dummy user");
 
           // Create the new user
+          const metadata = session.user.user_metadata as GoogleUserMetadata;
           const user = await tx.user.create({
             data: {
               id: session.user.id,
               email: session.user.email!,
               name: metadata.full_name ?? null,
               image: metadata.avatar_url ?? null,
-              isVerified: true, // OAuth providers verify emails
+              isVerified: true,
               isAdmin: false,
               isSuperAdmin: false,
             },
@@ -94,6 +106,7 @@ export async function GET(request: NextRequest) {
                 updatedAt: undefined,
               },
             });
+            console.log("Migrated member data");
           }
         });
 
