@@ -27,7 +27,7 @@ import {
 import { User, Building2, GraduationCap, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FACULTIES } from "@/lib/constants/faculties";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FileUpload } from "@/components/ui/file-upload";
 import { INDUSTRY_OPTIONS } from "@/lib/constants/industries";
 
@@ -35,6 +35,86 @@ interface MembershipFormProps {
   onSubmit: (values: MembershipFormValues) => Promise<void>;
   isSubmitting?: boolean;
   initialData?: MembershipFormValues;
+}
+
+// File Upload Field Component
+function FileUploadField({
+  value,
+  onChange,
+}: {
+  value: string | File | null;
+  onChange: (value: string | File | null) => void;
+}) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  
+  // Cleanup URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  // Update preview URL when field value changes
+  useEffect(() => {
+    if (value instanceof File) {
+      const url = URL.createObjectURL(value);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    } else if (typeof value === "string" && value) {
+      setPreviewUrl(value);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [value]);
+
+  return (
+    <div className="space-y-4">
+      <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
+        <FileUpload
+          value={value ?? undefined}
+          onChange={(files) => {
+            const file = files[0];
+            if (file) {
+              onChange(file);
+            }
+          }}
+          maxSizeInMB={5}
+        />
+      </div>
+      {value && (
+        <div className="relative aspect-square w-full max-w-[200px] overflow-hidden rounded-lg border border-gray-200">
+          {previewUrl ? (
+            <Image
+              src={previewUrl}
+              alt="Student ID Image"
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center bg-gray-50 p-4">
+              <p className="text-center text-sm text-gray-500">
+                {value instanceof File ? value.name : 'Loading preview...'}
+              </p>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              onChange(null);
+              setPreviewUrl(null);
+            }}
+            className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function MembershipForm({
@@ -403,42 +483,10 @@ export function MembershipForm({
                     </div>
                   </FormLabel>
                   <FormControl>
-                    <div className="space-y-4">
-                      <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
-                        <FileUpload
-                          value={field.value}
-                          onChange={field.onChange}
-                          maxSizeInMB={5}
-                        />
-                      </div>
-                      {field.value && (
-                        <div className="relative aspect-square w-full max-w-[200px] overflow-hidden rounded-lg border border-gray-200">
-                          {typeof field.value === "string" ? (
-                            <Image
-                              src={field.value}
-                              alt="Student ID Image"
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="flex h-full items-center justify-center bg-gray-50 p-4">
-                              <p className="text-center text-sm text-gray-500">{field.value.name}</p>
-                            </div>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              field.onChange("");
-                            }}
-                            className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    <FileUploadField
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
