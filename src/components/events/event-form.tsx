@@ -19,6 +19,8 @@ import { DateTimePicker } from "@/components/ui/date-time-picker";
 import type { Event } from "@prisma/client";
 import { Calendar, Image as ImageIcon, MapPin, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -75,6 +77,99 @@ export function EventForm({
   });
 
   const isEdit = !!initialData;
+
+  // Single File Upload Field Component
+  function SingleFileUploadField({
+    value,
+    onChange,
+    disabled,
+  }: {
+    value: string | File | null;
+    onChange: (value: string | File | null) => void;
+    disabled?: boolean;
+  }) {
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    // Cleanup URL on unmount
+    useEffect(() => {
+      return () => {
+        if (previewUrl?.startsWith("blob:")) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      };
+    }, [previewUrl]);
+
+    // Update preview URL when value changes
+    useEffect(() => {
+      if (value instanceof File) {
+        const url = URL.createObjectURL(value);
+        setPreviewUrl(url);
+        return () => URL.revokeObjectURL(url);
+      } else if (typeof value === "string" && value) {
+        setPreviewUrl(value);
+      } else {
+        setPreviewUrl(null);
+      }
+    }, [value]);
+
+    return (
+      <div className="space-y-4">
+        <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
+          <FileUpload
+            value={value ?? undefined}
+            onChange={(files) => {
+              const file = files[0];
+              if (file) {
+                onChange(file);
+              }
+            }}
+            maxSizeInMB={5}
+            disabled={disabled}
+          />
+        </div>
+        {value && (
+          <div className="relative aspect-video w-full max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
+            {previewUrl ? (
+              <Image
+                src={previewUrl}
+                alt="Event cover image"
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center bg-gray-50 p-4">
+                <p className="text-center text-sm text-gray-500">
+                  {value instanceof File ? value.name : "Loading preview..."}
+                </p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                onChange(null);
+                setPreviewUrl(null);
+              }}
+              className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+              disabled={disabled}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -249,7 +344,7 @@ export function EventForm({
               <FormField
                 control={form.control}
                 name="imageUrl"
-                render={({ field }) => (
+                render={({ field: { value, onChange, ...field } }) => (
                   <FormItem>
                     <FormLabel>
                       <div className="flex items-center gap-2">
@@ -258,13 +353,11 @@ export function EventForm({
                       </div>
                     </FormLabel>
                     <FormControl>
-                      <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
-                        <FileUpload
-                          value={field.value}
-                          onChange={field.onChange}
-                          disabled={isSubmitting}
-                        />
-                      </div>
+                      <SingleFileUploadField
+                        value={value}
+                        onChange={onChange}
+                        disabled={isSubmitting}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
