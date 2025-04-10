@@ -404,17 +404,11 @@ export function MembershipForm({
                   <FormControl>
                     <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
                       <FileUpload
-                        value={value}
+                        value={value instanceof File ? URL.createObjectURL(value) : value}
                         onChange={(files) => {
                           const file = files[0];
                           if (file) {
-                            // If it's a File object, create a preview URL
-                            if (file instanceof File) {
-                              onChange(file);
-                            } else {
-                              // If it's a string (URL), use it directly
-                              onChange(file);
-                            }
+                            onChange(file);
                           }
                         }}
                         maxSizeInMB={5}
