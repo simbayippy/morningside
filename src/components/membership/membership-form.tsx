@@ -394,9 +394,6 @@ export function MembershipForm({
               control={form.control}
               name="studentIdImage"
               render={({ field: { value, onChange, ...field } }) => {
-                // Create a preview URL for File objects
-                const previewUrl = value instanceof File ? URL.createObjectURL(value) : value;
-                
                 return (
                   <FormItem>
                     <FormLabel>
@@ -408,7 +405,7 @@ export function MembershipForm({
                     <FormControl>
                       <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
                         <FileUpload
-                          value={previewUrl}
+                          value={value} // Pass the value directly
                           onChange={(files) => {
                             const file = files[0];
                             if (file) {
@@ -424,7 +421,7 @@ export function MembershipForm({
                 );
               }}
             />
-
+            
             {/* Professional Information Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Professional Information</h3>
