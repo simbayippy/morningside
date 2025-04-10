@@ -134,67 +134,57 @@ export function NewsForm({
         return { id: index, url: item };
       });
 
-      // Cleanup old previews
-      previewUrls.forEach(preview => {
-        const stillExists = newPreviews.some(p => p.id === preview.id && p.url === preview.url);
-        if (!stillExists && preview.url.startsWith('blob:')) {
-          URL.revokeObjectURL(preview.url);
-        }
-      });
-
       setPreviewUrls(newPreviews);
-    }, [value, previewUrls]);
+    }, [value]);
 
     const handleRemove = (index: number) => {
-      const newValues = [...value];
-      newValues.splice(index, 1);
-      onChange(newValues);
+      const newValue = [...value];
+      newValue.splice(index, 1);
+      onChange(newValue);
     };
 
     return (
       <div className="space-y-4">
         <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
           <FileUpload
-            value={value}
+            value={undefined}
             onChange={(files) => {
-              onChange([...value, ...files]);
+              const newFiles = files.map(file => file);
+              onChange([...value, ...newFiles]);
             }}
-            multiple={true}
             maxSizeInMB={5}
+            multiple={true}
           />
         </div>
         {value.length > 0 && (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {value.map((file, index) => {
-              const preview = previewUrls.find(p => p.id === index);
-              return (
-                <div key={index} className="relative aspect-square overflow-hidden rounded-lg border border-gray-200">
-                  {preview ? (
-                    <Image
-                      src={preview.url}
-                      alt={`Image ${index + 1}`}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-gray-50 p-4">
-                      <p className="text-center text-sm text-gray-500">
-                        {file instanceof File ? file.name : 'Loading...'}
-                      </p>
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(index)}
-                    className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </div>
-              );
-            })}
+            {value.map((file, index) => (
+              <div key={index} className="relative aspect-square w-full overflow-hidden rounded-lg border border-gray-200">
+                {previewUrls[index] ? (
+                  <Image
+                    src={previewUrls[index].url}
+                    alt={`Image ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center bg-gray-50 p-4">
+                    <p className="text-center text-sm text-gray-500">
+                      {file instanceof File ? file.name : 'Loading preview...'}
+                    </p>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => handleRemove(index)}
+                  className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
