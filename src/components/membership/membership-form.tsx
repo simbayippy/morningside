@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -393,35 +394,57 @@ export function MembershipForm({
             <FormField
               control={form.control}
               name="studentIdImage"
-              render={({ field: { value, onChange, ...field } }) => {
-                return (
-                  <FormItem>
-                    <FormLabel>
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4 text-purple-600" />
-                        Student ID Card Image*
-                      </div>
-                    </FormLabel>
-                    <FormControl>
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <div className="flex items-center gap-2">
+                      <GraduationCap className="h-4 w-4 text-purple-600" />
+                      Student ID Card Image*
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="space-y-4">
                       <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
                         <FileUpload
-                          value={value} // Pass the value directly
-                          onChange={(files) => {
-                            const file = files[0];
-                            if (file) {
-                              onChange(file);
-                            }
-                          }}
+                          value={field.value}
+                          onChange={field.onChange}
                           maxSizeInMB={5}
                         />
                       </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+                      {field.value && (
+                        <div className="relative aspect-square w-full max-w-[200px] overflow-hidden rounded-lg border border-gray-200">
+                          {typeof field.value === "string" ? (
+                            <Image
+                              src={field.value}
+                              alt="Student ID Image"
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center bg-gray-50 p-4">
+                              <p className="text-center text-sm text-gray-500">{field.value.name}</p>
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              field.onChange("");
+                            }}
+                            className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            
+
             {/* Professional Information Section */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Professional Information</h3>
