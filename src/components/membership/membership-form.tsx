@@ -405,8 +405,8 @@ export function MembershipForm({
                     <div className="max-w-[500px] overflow-hidden rounded-lg border border-gray-200">
                       <FileUpload
                         value={field.value}
-                        onChange={field.onChange}
-                        disabled={isSubmitting}
+                        onChange={(files) => field.onChange(files[0])}
+                        maxSizeInMB={5}
                       />
                     </div>
                   </FormControl>
