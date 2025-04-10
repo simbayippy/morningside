@@ -1,6 +1,5 @@
 import { type NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
 // Type for Google OAuth metadata
@@ -99,18 +98,18 @@ export async function GET(request: NextRequest) {
         });
 
         console.log("Successfully created/migrated user");
-        redirect("/");
+        return Response.redirect(new URL("/", request.url));
       } catch (error) {
         console.error("Error in OAuth signup:", error);
         if (error instanceof Error && error.message === "Email already exists") {
-          redirect("/error?message=email-exists");
+          return Response.redirect(new URL("/error?message=email-exists", request.url));
         }
-        redirect("/error");
+        return Response.redirect(new URL("/error", request.url));
       }
     }
     console.log("Failed to exchange code:", error);
   }
 
   console.log("No valid code found, redirecting to error page");
-  redirect("/error");
+  return Response.redirect(new URL("/error", request.url));
 }
