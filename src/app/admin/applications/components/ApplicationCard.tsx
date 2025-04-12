@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { type MemberWithUser } from "../types/types";
+import Image from "next/image";
+import { Expand } from "lucide-react";
 
 interface ApplicationCardProps {
   application: MemberWithUser;
@@ -134,16 +136,32 @@ export function ApplicationCard({
 
         <div className="mt-6">
           <p className="text-sm font-medium text-gray-500">Student ID Image</p>
-          <button
-            onClick={() => onViewImage(application.studentIdImage)}
-            className="mt-2 overflow-hidden rounded-lg transition-opacity hover:opacity-80"
-          >
-            <img
-              src={application.studentIdImage}
-              alt="Student ID"
-              className="max-h-[200px] object-cover"
-            />
-          </button>
+          {application.studentIdImage ? (
+            <button
+              onClick={() => onViewImage(application.studentIdImage)}
+              className="group mt-2 block w-full overflow-hidden rounded-lg bg-gray-50 transition-all hover:bg-gray-100"
+            >
+              <div className="relative h-[200px] w-full">
+                <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="rounded-full bg-black/50 p-3">
+                    <Expand className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+                <Image
+                  src={application.studentIdImage}
+                  alt="Student ID"
+                  fill
+                  className="object-cover transition-transform group-hover:scale-105"
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                />
+              </div>
+              <p className="mt-2 text-center text-sm text-gray-500">Click to view full image</p>
+            </button>
+          ) : (
+            <div className="mt-2 flex h-[200px] items-center justify-center rounded-lg bg-gray-100">
+              <p className="text-sm text-gray-500">No image available</p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

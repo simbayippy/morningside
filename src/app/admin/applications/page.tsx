@@ -23,6 +23,7 @@ export default function ApplicationsPage() {
   const [rejectionReason, setRejectionReason] = useState("");
 
   const { data: applications, isLoading } = api.member.getAllApplications.useQuery();
+  console.log("applications", applications);
 
   const verifyMembership = api.member.verifyMembership.useMutation({
     onSuccess: () => {

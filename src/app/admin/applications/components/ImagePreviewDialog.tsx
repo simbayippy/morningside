@@ -6,6 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Image from "next/image";
 
 interface ImagePreviewDialogProps {
   image: string | null;
@@ -20,11 +21,16 @@ export function ImagePreviewDialog({ image, onClose }: ImagePreviewDialogProps) 
           <AlertDialogTitle>Student ID Image</AlertDialogTitle>
         </AlertDialogHeader>
         {image && (
-          <img
-            src={image}
-            alt="Student ID"
-            className="w-full rounded-lg"
-          />
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
+            <Image
+              src={image}
+              alt="Student ID"
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+              priority
+            />
+          </div>
         )}
         <AlertDialogFooter>
           <AlertDialogCancel>Close</AlertDialogCancel>

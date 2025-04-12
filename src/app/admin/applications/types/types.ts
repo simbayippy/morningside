@@ -1,8 +1,5 @@
-import { type Member } from "@prisma/client";
+import { type Member, type User } from "@prisma/client";
 
 export interface MemberWithUser extends Member {
-  user: {
-    email: string;
-    name: string | null;
-  } | null;
+  user: User | null;
 }

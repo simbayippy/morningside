@@ -33,12 +33,19 @@ export function ApplicationTabs({
       );
     }
 
+    const DEFAULT_LEGACY_IMAGE = "https://czrsqvfoxplmypvmfykr.supabase.co/storage/v1/object/public/events/membership-images/360_F_272404412_MD9Qnk52bpTk9BEhpq2ZofYupyF8UWbg.jpg";
+
     return (
       <div className="space-y-6">
         {applications.map((application) => (
           <ApplicationCard
             key={application.id}
-            application={application}
+            application={{
+              ...application,
+              studentIdImage: application.studentIdImage === "LEGACY" 
+                ? DEFAULT_LEGACY_IMAGE 
+                : application.studentIdImage
+            }}
             onApprove={onApprove}
             onReject={onReject}
             onViewImage={onViewImage}

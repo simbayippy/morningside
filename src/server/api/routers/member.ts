@@ -273,12 +273,7 @@ export const memberRouter = createTRPCRouter({
     try {
       return await ctx.db.member.findMany({
         include: {
-          user: {
-            select: {
-              email: true,
-              name: true,
-            },
-          },
+          user: true,
         },
         orderBy: { createdAt: "desc" },
       });
