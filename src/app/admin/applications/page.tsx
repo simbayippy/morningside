@@ -1,26 +1,16 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { formatDate } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ApplicationTabs } from "./components/ApplicationTabs";
+import { RejectDialog } from "./components/RejectDialog";
+import { ApproveDialog } from "./components/ApproveDialog";
+import { ImagePreviewDialog } from "./components/ImagePreviewDialog";
 
 export default function ApplicationsPage() {
   const router = useRouter();
@@ -32,8 +22,7 @@ export default function ApplicationsPage() {
   const [selectedMemberName, setSelectedMemberName] = useState<string>("");
   const [rejectionReason, setRejectionReason] = useState("");
 
-  const { data: applications, isLoading } =
-    api.member.getAllApplications.useQuery();
+  const { data: applications, isLoading } = api.member.getAllApplications.useQuery();
 
   const verifyMembership = api.member.verifyMembership.useMutation({
     onSuccess: () => {
@@ -105,330 +94,66 @@ export default function ApplicationsPage() {
   };
 
   // Filter applications by status
-  const pendingApplications =
-    applications?.filter((app) => app.status === "PENDING") ?? [];
-  const approvedApplications =
-    applications?.filter((app) => app.status === "APPROVED") ?? [];
-  const rejectedApplications =
-    applications?.filter((app) => app.status === "REJECTED") ?? [];
-
-  const renderApplications = (filteredApplications: typeof applications) => {
-    if (!filteredApplications?.length) {
-      return (
-        <Card>
-          <CardContent className="flex min-h-[200px] items-center justify-center text-gray-500">
-            No applications found
-          </CardContent>
-        </Card>
-      );
-    }
-
-    return (
-      <div className="space-y-6">
-        {filteredApplications.map((application) => (
-          <Card key={application.id}>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>{application.englishName}</span>
-                {application.status === "PENDING" && (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() =>
-                        openRejectDialog(
-                          application.id,
-                          application.englishName,
-                        )
-                      }
-                      disabled={
-                        verifyMembership.isPending || rejectMembership.isPending
-                      }
-                      className="border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700"
-                    >
-                      {rejectMembership.isPending ? "Processing..." : "Reject"}
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        openApproveDialog(
-                          application.id,
-                          application.englishName,
-                        )
-                      }
-                      disabled={
-                        verifyMembership.isPending || rejectMembership.isPending
-                      }
-                    >
-                      {verifyMembership.isPending ? "Processing..." : "Approve"}
-                    </Button>
-                  </div>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-500">
-                    Personal Information
-                  </p>
-                  <div className="space-y-1">
-                    <p>
-                      <span className="font-medium">Name: </span>
-                      {application.salutation} {application.englishName}
-                    </p>
-                    <p>
-                      <span className="font-medium">Gender: </span>
-                      {application.gender}
-                    </p>
-                    <p>
-                      <span className="font-medium">Email: </span>
-                      {application.user!.email}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-500">
-                    Academic Information
-                  </p>
-                  <div className="space-y-1">
-                    <p>
-                      <span className="font-medium">Faculty: </span>
-                      {application.faculty}
-                    </p>
-                    <p>
-                      <span className="font-medium">Major: </span>
-                      {application.major}
-                    </p>
-                    <p>
-                      <span className="font-medium">Class: </span>
-                      {application.class}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-500">
-                    Application Details
-                  </p>
-                  <div className="space-y-1">
-                    <p>
-                      <span className="font-medium">Membership Type: </span>
-                      {application.membershipType}
-                    </p>
-                    <p>
-                      <span className="font-medium">Applied on: </span>
-                      {formatDate(application.createdAt)}
-                    </p>
-                    {application.status === "REJECTED" &&
-                      application.rejectionReason && (
-                        <p>
-                          <span className="font-medium">
-                            Rejection Reason:{" "}
-                          </span>
-                          <span className="text-red-600">
-                            {application.rejectionReason}
-                          </span>
-                        </p>
-                      )}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-500">
-                    Contact Information
-                  </p>
-                  <div className="space-y-1">
-                    <p>
-                      <span className="font-medium">Phone: </span>
-                      {application.phoneNumber}
-                    </p>
-                    {application.address && (
-                      <p>
-                        <span className="font-medium">Address: </span>
-                        {application.address}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <p className="text-sm font-medium text-gray-500">
-                  Student ID Image
-                </p>
-                <button
-                  onClick={() => setSelectedImage(application.studentIdImage)}
-                  className="mt-2 overflow-hidden rounded-lg transition-opacity hover:opacity-80"
-                >
-                  <img
-                    src={application.studentIdImage}
-                    alt="Student ID"
-                    className="max-h-[200px] object-cover"
-                  />
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  };
+  const pendingApplications = applications?.filter((app) => app.status === "PENDING") ?? [];
+  const approvedApplications = applications?.filter((app) => app.status === "APPROVED") ?? [];
+  const rejectedApplications = applications?.filter((app) => app.status === "REJECTED") ?? [];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto max-w-[1200px] px-8 py-8">
-        {/* Back Button */}
-        <Link
-          href="/admin/dashboard"
-          className="group mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Back to Dashboard
-        </Link>
+      <div className="container mx-auto py-8">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/admin">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Link>
+          </Button>
+        </div>
 
         <div className="mb-8">
           <h1 className="font-mono text-3xl font-bold text-gray-900">
             Membership Applications
           </h1>
-          <p className="mt-4 text-lg text-gray-600">
-            Review and manage membership applications.
-          </p>
         </div>
 
         {isLoading ? (
-          <div className="flex items-center gap-2 text-gray-600">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Loading applications...
+          <div className="flex h-[200px] items-center justify-center">
+            <Loader2 className="h-6 w-6 animate-spin" />
           </div>
         ) : (
-          <Tabs defaultValue="pending" className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="pending" className="relative">
-                Pending
-                {pendingApplications.length > 0 && (
-                  <span className="ml-2 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-600">
-                    {pendingApplications.length}
-                  </span>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="approved">
-                Approved
-                {approvedApplications.length > 0 && (
-                  <span className="ml-2 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-600">
-                    {approvedApplications.length}
-                  </span>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="rejected">
-                Rejected
-                {rejectedApplications.length > 0 && (
-                  <span className="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600">
-                    {rejectedApplications.length}
-                  </span>
-                )}
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="pending" className="mt-6">
-              {renderApplications(pendingApplications)}
-            </TabsContent>
-
-            <TabsContent value="approved" className="mt-6">
-              {renderApplications(approvedApplications)}
-            </TabsContent>
-
-            <TabsContent value="rejected" className="mt-6">
-              {renderApplications(rejectedApplications)}
-            </TabsContent>
-          </Tabs>
+          <ApplicationTabs
+            pendingApplications={pendingApplications}
+            approvedApplications={approvedApplications}
+            rejectedApplications={rejectedApplications}
+            onApprove={openApproveDialog}
+            onReject={openRejectDialog}
+            onViewImage={setSelectedImage}
+            isProcessing={verifyMembership.isPending || rejectMembership.isPending}
+          />
         )}
 
-        {/* Alert Dialogs */}
-        <AlertDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Reject Application</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to reject {selectedMemberName}&apos;s
-                membership application? This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <div className="mt-4">
-              <Textarea
-                placeholder="Enter reason for rejection (optional)"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                className="min-h-[100px]"
-              />
-            </div>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleReject}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                {rejectMembership.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Rejecting...
-                  </>
-                ) : (
-                  "Reject Application"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <RejectDialog
+          open={rejectDialogOpen}
+          onOpenChange={setRejectDialogOpen}
+          memberName={selectedMemberName}
+          reason={rejectionReason}
+          onReasonChange={setRejectionReason}
+          onConfirm={handleReject}
+          isLoading={rejectMembership.isPending}
+        />
 
-        <AlertDialog
+        <ApproveDialog
           open={approveDialogOpen}
           onOpenChange={setApproveDialogOpen}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Approve Application</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to approve {selectedMemberName}&apos;s
-                membership application?
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleApprove}>
-                {verifyMembership.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Approving...
-                  </>
-                ) : (
-                  "Approve Application"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          memberName={selectedMemberName}
+          onConfirm={handleApprove}
+          isLoading={verifyMembership.isPending}
+        />
 
-        {/* Image Preview Dialog */}
-        <AlertDialog
-          open={!!selectedImage}
-          onOpenChange={() => setSelectedImage(null)}
-        >
-          <AlertDialogContent className="max-w-3xl">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Student ID Image</AlertDialogTitle>
-            </AlertDialogHeader>
-            {selectedImage && (
-              <img
-                src={selectedImage}
-                alt="Student ID"
-                className="w-full rounded-lg"
-              />
-            )}
-            <AlertDialogFooter>
-              <AlertDialogCancel>Close</AlertDialogCancel>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <ImagePreviewDialog
+          image={selectedImage}
+          onClose={() => setSelectedImage(null)}
+        />
       </div>
     </div>
   );
