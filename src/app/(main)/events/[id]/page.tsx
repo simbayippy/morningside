@@ -1,9 +1,9 @@
 import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
 import { formatDate, formatPrice } from "@/lib/utils";
-import RegisterButton from "./register-button";
-import { AdminControls } from "./admin-controls";
-import { RegisteredUsers } from "./registered-users";
+import RegisterButton from "./components/register-button";
+import { AdminControls } from "./components/admin-controls";
+import { RegisteredUsers } from "./components/registered-users";
 import { getCurrentUser, isUserAdmin } from "@/lib/auth";
 import { ArrowLeft, Calendar, MapPin, Users } from "lucide-react";
 import Link from "next/link";
@@ -169,6 +169,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
                 <RegisterButton
                   eventId={event.id}
+                  price={Number(event.price)}
                   isAtCapacity={isAtCapacity}
                   isLoggedIn={!!currentUser}
                 />

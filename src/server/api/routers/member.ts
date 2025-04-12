@@ -114,22 +114,35 @@ export const memberRouter = createTRPCRouter({
         );
 
         // Update the member profile
-        const updatedMember = await ctx.db.member.update({
-          where: { userId: ctx.session.user.id },
-          data: updateData,
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-                isAdmin: true,
-                isSuperAdmin: true,
-                createdAt: true,
+        const updatedMember = await ctx.db.$transaction(async (tx) => {
+          // Update member profile
+          const member = await tx.member.update({
+            where: { userId: ctx.session.user.id },
+            data: updateData,
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                  isAdmin: true,
+                  isSuperAdmin: true,
+                  createdAt: true,
+                },
               },
             },
-          },
+          });
+
+          // If englishName is being updated, also update the user's name
+          if ('englishName' in input && input.englishName !== undefined) {
+            await tx.user.update({
+              where: { id: ctx.session.user.id },
+              data: { name: input.englishName },
+            });
+          }
+
+          return member;
         });
 
         const { user, ...memberData } = updatedMember as MemberWithUser;
@@ -211,19 +224,30 @@ export const memberRouter = createTRPCRouter({
         // If there's a rejected application, update it instead of creating new
         if (existingMembership?.status === "REJECTED") {
           console.log("Updating rejected application with new data");
-          const result = await ctx.db.member.update({
-            where: { userId: ctx.session.user.id },
-            data: {
-              membershipFee,
-              ...input,
-              status: "PENDING", // Reset status to pending
-              isVerified: false, // Reset verification
-              verifiedAt: null,
-              rejectionReason: null,
-              studentIdImage: input.studentIdImage as string,
-              paymentImage: input.paymentImage as string,
-              dateOfRegistration: new Date(), // Update registration date
-            },
+          const result = await ctx.db.$transaction(async (tx) => {
+            // Update member
+            const member = await tx.member.update({
+              where: { userId: ctx.session.user.id },
+              data: {
+                membershipFee,
+                ...input,
+                status: "PENDING", // Reset status to pending
+                isVerified: false, // Reset verification
+                verifiedAt: null,
+                rejectionReason: null,
+                studentIdImage: input.studentIdImage as string,
+                paymentImage: input.paymentImage as string,
+                dateOfRegistration: new Date(), // Update registration date
+              },
+            });
+
+            // Update user name
+            await tx.user.update({
+              where: { id: ctx.session.user.id },
+              data: { name: input.englishName },
+            });
+
+            return member;
           });
           console.log("Successfully updated membership:", result);
           return result;
@@ -237,14 +261,25 @@ export const memberRouter = createTRPCRouter({
           studentIdImage: input.studentIdImage as string,
         });
 
-        const result = await ctx.db.member.create({
-          data: {
-            userId: ctx.session.user.id,
-            membershipFee,
-            ...input,
-            studentIdImage: input.studentIdImage as string,
-            paymentImage: input.paymentImage as string,
-          },
+        const result = await ctx.db.$transaction(async (tx) => {
+          // Create member
+          const member = await tx.member.create({
+            data: {
+              userId: ctx.session.user.id,
+              membershipFee,
+              ...input,
+              studentIdImage: input.studentIdImage as string,
+              paymentImage: input.paymentImage as string,
+            },
+          });
+
+          // Update user name
+          await tx.user.update({
+            where: { id: ctx.session.user.id },
+            data: { name: input.englishName },
+          });
+
+          return member;
         });
         console.log("Successfully created membership:", result);
         return result;

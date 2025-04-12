@@ -44,11 +44,11 @@ export function RegisteredUsers({ registrations }: RegisteredUsersProps) {
                 {index > 0 && <Separator className="my-3" />}
                 <div className="flex flex-col">
                   <span className="font-medium text-[#383590]">
-                    {registration.user.name ?? "Anonymous"}
+                    {registration.user.name ?? "Non-member"}
                   </span>
-                  <span className="text-sm text-[#383590]/70">
+                  {/* <span className="text-sm text-[#383590]/70">
                     {registration.user.email}
-                  </span>
+                  </span> */}
                 </div>
               </div>
             ))}

@@ -126,8 +126,12 @@ export const eventRouter = createTRPCRouter({
   }),
 
   register: protectedProcedure
-    .input(z.object({ eventId: z.string() }))
+    .input(z.object({
+      eventId: z.string(),
+      paymentImage: z.string().url(),
+    }))
     .mutation(async ({ ctx, input }) => {
+      console.log("Registering ddfor event:", input);
       try {
         const event = await ctx.db.event.findUnique({
           where: { id: input.eventId },
@@ -166,17 +170,44 @@ export const eventRouter = createTRPCRouter({
           });
         }
 
-        return await ctx.db.eventRegistration.create({
-          data: {
+        try {
+          const registrationData = {
             userId: ctx.session.user.id,
             eventId: input.eventId,
-          },
-        });
+            paymentImage: input.paymentImage,
+            status: "REGISTERED",
+          };
+          const registration = await ctx.db.eventRegistration.create({
+            data: registrationData,
+            select: {
+              id: true,
+              userId: true,
+              eventId: true,
+              status: true,
+              paymentImage: true,
+              createdAt: true,
+            },
+          });
+          return registration;
+        } catch (createError) {
+          console.error("Failed to create event registration:", {
+            error: createError,
+            input,
+            userId: ctx.session.user.id,
+          });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to create event registration",
+            cause: createError,
+          });
+        }
       } catch (error) {
+        console.error("Error in event registration:", error);
         if (error instanceof TRPCError) throw error;
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to register for event",
+          message: error instanceof Error ? error.message : "Failed to register for event",
+          cause: error,
         });
       }
     }),

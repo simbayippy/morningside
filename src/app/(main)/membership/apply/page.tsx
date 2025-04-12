@@ -100,6 +100,7 @@ export default function ApplyMembershipPage() {
   const initialData = existingMembership
     ? {
         membershipType: existingMembership.membershipType,
+        // eslint-disable-line @typescript-eslint/no-non-null-assertion
         salutation: existingMembership.salutation as
           | "Mr"
           | "Mrs"
@@ -109,12 +110,14 @@ export default function ApplyMembershipPage() {
         englishName: existingMembership.englishName,
         preferredName: existingMembership.preferredName ?? "",
         chineseName: existingMembership.chineseName ?? "",
+        // eslint-disable-line @typescript-eslint/no-non-null-assertion
         gender: existingMembership.gender as
           | "male"
           | "female"
           | "other"
           | "prefer_not_to_say",
         class: existingMembership.class,
+        // eslint-disable-line @typescript-eslint/no-non-null-assertion
         faculty: existingMembership.faculty as (typeof FACULTY_NAMES)[number],
         major: existingMembership.major,
         cusid: existingMembership.cusid,
@@ -123,6 +126,7 @@ export default function ApplyMembershipPage() {
         position: existingMembership.position ?? "",
         phoneNumber: existingMembership.phoneNumber,
         address: existingMembership.address ?? "",
+        // eslint-disable-line @typescript-eslint/no-non-null-assertion
         paymentImage: (existingMembership.paymentImage as string) ?? "",
       }
     : undefined;
