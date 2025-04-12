@@ -10,12 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowLeft, Download, Loader2, User } from "lucide-react";
+import { ArrowLeft, Download, Loader2, User, Eye } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { formatDate } from "@/lib/utils";
-import { use } from "react";
+import { use, useState } from "react";
 import { utils, writeFile } from "xlsx";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface EventDetailsPageProps {
   params: Promise<{
@@ -30,6 +32,9 @@ export default function EventDetailsPage({ params }: EventDetailsPageProps) {
   const { data: event, isLoading } = api.event.getById.useQuery({
     id,
   });
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
 
   const handleExport = () => {
     if (!event) return;
@@ -132,13 +137,14 @@ export default function EventDetailsPage({ params }: EventDetailsPageProps) {
                 <TableHead>User</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Payment Proof</TableHead>
                 <TableHead>Registered On</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {event.registrations.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-gray-500">
+                  <TableCell colSpan={5} className="text-center text-gray-500">
                     No registrations yet
                   </TableCell>
                 </TableRow>
@@ -165,6 +171,24 @@ export default function EventDetailsPage({ params }: EventDetailsPageProps) {
                         {registration.status}
                       </div>
                     </TableCell>
+                    <TableCell>
+                      {registration.paymentImage ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-2 text-blue-600 hover:text-blue-700"
+                          onClick={() => {
+                            setSelectedImage(registration.paymentImage as string);
+                            setIsImageDialogOpen(true);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                          View Receipt
+                        </Button>
+                      ) : (
+                        <span className="text-gray-500">No receipt</span>
+                      )}
+                    </TableCell>
                     <TableCell>{formatDate(registration.createdAt)}</TableCell>
                   </TableRow>
                 ))
@@ -172,6 +196,24 @@ export default function EventDetailsPage({ params }: EventDetailsPageProps) {
             </TableBody>
           </Table>
         </Card>
+
+        {/* Image Preview Dialog */}
+        <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+          <DialogContent className="max-w-3xl">
+            <DialogTitle>Payment Receipt</DialogTitle>
+            <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg">
+              {selectedImage && (
+                <Image
+                  src={selectedImage}
+                  alt="Payment receipt"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 50vw"
+                />
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
