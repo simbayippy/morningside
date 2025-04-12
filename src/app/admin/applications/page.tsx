@@ -104,7 +104,7 @@ export default function ApplicationsPage() {
       <div className="container mx-auto py-8">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/admin">
+            <Link href="/admin/dashboard">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Link>
