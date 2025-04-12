@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { updateUserPassword } from "../actions";
+import { updateUserPassword } from "../../actions";
 
 const updatePasswordSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
