@@ -23,21 +23,21 @@ export default function AdminDashboardPage() {
             Admin Dashboard
           </h1>
           <p className="mt-4 text-lg text-gray-600">
-            Manage membership applications and monitor alumni activities.
+            Manage membership applications and download member data.
           </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* Membership Applications Card */}
+          {/* Membership & Applications Card */}
           <Link href="/admin/applications" className="block h-full">
             <Card className="h-full transition-all hover:shadow-lg">
               <CardHeader>
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-100">
                   <Users className="h-6 w-6 text-purple-600" />
                 </div>
-                <CardTitle>Membership Applications</CardTitle>
+                <CardTitle>Membership & Applications</CardTitle>
                 <p className="text-sm text-gray-600">
-                  Review and manage membership applications
+                  Review applications & download member data
                 </p>
               </CardHeader>
               <CardContent>

@@ -113,7 +113,7 @@ export default function ApplicationsPage() {
 
         <div className="mb-8">
           <h1 className="font-mono text-3xl font-bold text-gray-900">
-            Membership Applications
+            Membership & Applications
           </h1>
         </div>
 
