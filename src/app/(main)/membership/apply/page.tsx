@@ -35,6 +35,7 @@ export default function ApplyMembershipPage() {
   const onSubmit = async (values: MembershipFormValues) => {
     try {
       let studentIdImage = values.studentIdImage;
+      let paymentImage = values.paymentImage;
 
       if (values.studentIdImage instanceof File) {
         console.log("Uploading student ID image...");
@@ -46,10 +47,21 @@ export default function ApplyMembershipPage() {
         console.log("Image uploaded successfully:", studentIdImage);
       }
 
+      if (values.paymentImage instanceof File) {
+        console.log("Uploading payment proof...");
+        const uploadResult = await uploadFile(
+          values.paymentImage,
+          "membership",
+        );
+        paymentImage = uploadResult.url;
+        console.log("Payment proof uploaded successfully:", paymentImage);
+      }
+
       const formattedValues = {
         ...values,
         class: Number(values.class),
         studentIdImage: studentIdImage as string,
+        paymentImage: paymentImage as string,
       };
 
       console.log(
@@ -111,6 +123,7 @@ export default function ApplyMembershipPage() {
         position: existingMembership.position ?? "",
         phoneNumber: existingMembership.phoneNumber,
         address: existingMembership.address ?? "",
+        paymentImage: (existingMembership.paymentImage as string) ?? "",
       }
     : undefined;
 

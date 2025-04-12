@@ -42,6 +42,7 @@ model Member {
   membershipType   MembershipType
   membershipFee    Decimal?
   transactionDate  DateTime?
+  paymentImage     String?        // URL to payment proof image
   dateOfRegistration DateTime     @default(now())
   
   // Personal Information
@@ -99,12 +100,13 @@ model Event {
 }
 
 model EventRegistration {
-  id        String   @id @default(cuid())
-  userId    String
-  eventId   String
-  status    String   @default("REGISTERED") // REGISTERED, CANCELLED, ATTENDED
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  userId       String
+  eventId      String
+  status       String   @default("REGISTERED") // REGISTERED, CANCELLED, ATTENDED
+  paymentImage String?  // URL to payment proof image
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
   user  User  @relation(fields: [userId], references: [id])
@@ -138,4 +140,3 @@ model News {
   @@index([authorId])
   @@index([featured])
 }
-

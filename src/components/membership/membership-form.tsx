@@ -30,6 +30,7 @@ import { FACULTIES } from "@/lib/constants/faculties";
 import { useEffect, useState } from "react";
 import { FileUpload } from "@/components/ui/file-upload";
 import { INDUSTRY_OPTIONS } from "@/lib/constants/industries";
+import { PaymentInstructionsDialog } from "@/components/payments/payment-instructions-dialog";
 
 interface MembershipFormProps {
   onSubmit: (values: MembershipFormValues) => Promise<void>;
@@ -141,6 +142,7 @@ export function MembershipForm({
       industry: undefined,
       phoneNumber: "",
       address: "",
+      paymentImage: "",
     },
   });
 
@@ -492,6 +494,31 @@ export function MembershipForm({
                 </FormItem>
               )}
             />
+
+            {/* Payment Section */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-6">
+                <h2 className="font-semibold text-gray-900">Payment Proof</h2>
+                <PaymentInstructionsDialog />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="paymentImage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>500HKD Payment Screenshot*</FormLabel>
+                    <FormControl>
+                      <FileUploadField
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Professional Information Section */}
             <div className="space-y-4">

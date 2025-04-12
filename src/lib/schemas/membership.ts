@@ -63,6 +63,13 @@ export const membershipFormSchema = z.object({
   employer: z.string().optional(),
   position: z.string().optional(),
 
+  // Payment Information
+  paymentImage: z
+    .union([z.string(), z.instanceof(File)])
+    .refine((val) => val !== "", {
+      message: "Please upload your payment proof",
+    }),
+
   // Additional Contact Information (Optional)
   address: z.string().optional(),
 

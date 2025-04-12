@@ -221,6 +221,7 @@ export const memberRouter = createTRPCRouter({
               verifiedAt: null,
               rejectionReason: null,
               studentIdImage: input.studentIdImage as string,
+              paymentImage: input.paymentImage as string,
               dateOfRegistration: new Date(), // Update registration date
             },
           });
@@ -242,6 +243,7 @@ export const memberRouter = createTRPCRouter({
             membershipFee,
             ...input,
             studentIdImage: input.studentIdImage as string,
+            paymentImage: input.paymentImage as string,
           },
         });
         console.log("Successfully created membership:", result);
