@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,8 +14,9 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { updateUserPassword } from "../../actions";
+import { createClient } from "@/utils/supabase/client";
 
 const updatePasswordSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -29,6 +30,7 @@ type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
 
 export default function UpdatePassword() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -39,6 +41,17 @@ export default function UpdatePassword() {
       confirmPassword: "",
     },
   });
+
+  // Get the code from URL and exchange it for a session
+  useEffect(() => {
+    const code = searchParams.get('code');
+    if (code) {
+      const supabase = createClient();
+      supabase.auth.exchangeCodeForSession(code).catch((err) => {
+        setError("Invalid or expired password reset link");
+      });
+    }
+  }, [searchParams]);
 
   const onSubmit = async (data: UpdatePasswordInput) => {
     try {
