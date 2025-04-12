@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState, useEffect, Suspense } from "react";
 import { updateUserPassword } from "../../actions";
 import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
 
 const updatePasswordSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -65,8 +66,15 @@ function UpdatePasswordForm() {
       if (result.error) {
         setError(result.error);
       } else {
-        // Redirect to login page after successful password update
-        router.push("/login?message=Password updated successfully");
+        // Show success message with Sonner
+        toast.success("Password Updated Successfully", {
+          description: "You will be redirected to login...",
+        });
+        
+        // Wait for 2 seconds before redirecting
+        setTimeout(() => {
+          router.push("/login?message=Password updated successfully");
+        }, 1000);
       }
     } catch (err) {
       setError("An error occurred while updating your password");
