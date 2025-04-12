@@ -38,7 +38,7 @@ const membershipTypes: Record<MembershipType, MembershipTypeInfo> = {
     title: "Ordinary Member I",
     description: "Who is a Graduate of the College",
     icon: Award,
-    fee: "HKD 1000",
+    fee: "HKD 500",
     benefits: [
       "Elect and to be elected as an Executive Committee member of the Association",
       "Nominate and be nominated as an Executive Committee member of the Association",
