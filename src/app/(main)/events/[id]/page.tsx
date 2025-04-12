@@ -172,6 +172,9 @@ export default async function EventPage({ params }: EventPageProps) {
                   price={Number(event.price)}
                   isAtCapacity={isAtCapacity}
                   isLoggedIn={!!currentUser}
+                  isRegistered={event.registrations.some(
+                    (registration) => registration.userId === currentUser?.id
+                  )}
                 />
 
                 {isAdmin && <AdminControls eventId={event.id} />}

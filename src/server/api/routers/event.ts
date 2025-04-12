@@ -131,7 +131,7 @@ export const eventRouter = createTRPCRouter({
       paymentImage: z.string().url(),
     }))
     .mutation(async ({ ctx, input }) => {
-      console.log("Registering ddfor event:", input);
+      console.log("Registering for event:", input);
       try {
         const event = await ctx.db.event.findUnique({
           where: { id: input.eventId },
@@ -208,6 +208,49 @@ export const eventRouter = createTRPCRouter({
           code: "INTERNAL_SERVER_ERROR",
           message: error instanceof Error ? error.message : "Failed to register for event",
           cause: error,
+        });
+      }
+    }),
+
+  cancelRegistration: protectedProcedure
+    .input(z.object({
+      eventId: z.string(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        // Check if registration exists
+        const registration = await ctx.db.eventRegistration.findUnique({
+          where: {
+            userId_eventId: {
+              userId: ctx.session.user.id,
+              eventId: input.eventId,
+            },
+          },
+        });
+
+        if (!registration) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Registration not found",
+          });
+        }
+
+        // Delete the registration
+        await ctx.db.eventRegistration.delete({
+          where: {
+            userId_eventId: {
+              userId: ctx.session.user.id,
+              eventId: input.eventId,
+            },
+          },
+        });
+
+        return { success: true };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to cancel registration",
         });
       }
     }),
