@@ -122,8 +122,8 @@ export function RegisterDialog({ eventId, price, trigger }: RegisterDialogProps)
               <div className="rounded-lg border border-[#F5BC4C]/20 bg-[#F5BC4C]/5 p-4">
                 {paymentImage instanceof File ? (
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-[#F5BC4C]/20">
+                    <div className="flex items-center gap-2">
+                      <div className="relative h-10 w-10 overflow-hidden rounded-lg border border-[#F5BC4C]/20">
                         <Image
                           src={URL.createObjectURL(paymentImage)}
                           alt="Payment proof preview"
@@ -131,10 +131,8 @@ export function RegisterDialog({ eventId, price, trigger }: RegisterDialogProps)
                           className="object-cover"
                         />
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-medium text-[#383590] truncate">
-                          {paymentImage.name}
-                        </p>
+                      <div>
+                        <p className="font-medium text-[#383590]">{paymentImage.name}</p>
                         <p className="text-sm text-[#383590]/70">
                           {(paymentImage.size / 1024 / 1024).toFixed(2)} MB
                         </p>
@@ -144,7 +142,7 @@ export function RegisterDialog({ eventId, price, trigger }: RegisterDialogProps)
                       variant="ghost"
                       size="sm"
                       onClick={() => setPaymentImage(null)}
-                      className="flex-shrink-0 text-[#383590] hover:text-[#383590]/90"
+                      className="text-[#383590] hover:text-[#383590]/90"
                     >
                       Remove
                     </Button>
