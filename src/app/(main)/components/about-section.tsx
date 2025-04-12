@@ -16,11 +16,10 @@ export function AboutSection() {
           {/* Right Column */}
           <div>
             <p className="mb-8 text-lg text-primary">
-              Founded in 1894, Morningside University has been a cornerstone of
-              academic excellence and community engagement. Our Alumni
-              Association continues this legacy by fostering meaningful
-              connections among graduates who have made their mark across the
-              globe.
+              Founded in 2016, Morningside College Alumni Association (MCAA) has been a cornerstone
+              of Morningside College (MC), The Chinese University of Hong Kong (CUHK). Our members
+              encompass over 40 different countries globally and spread across different backgrounds
+              and industries.
             </p>
 
             <div className="space-y-6">
@@ -28,13 +27,13 @@ export function AboutSection() {
                 <div className="mb-2 flex items-center gap-4">
                   <div className="h-0.5 w-12 bg-primary"></div>
                   <h3 className="text-2xl font-bold text-primary">
-                    Our Mission
+                    MCAA Mission
                   </h3>
                 </div>
                 <p className="text-lg text-primary">
-                  To cultivate lifelong relationships between alumni and the
-                  university, fostering a spirit of loyalty, involvement, and
-                  support.
+                  To foster meaningful connections among graduates and cultivate a culture of philanthropy
+                  among our community, providing a heart of servitude for future generations of
+                  Morningsiders!
                 </p>
               </div>
 
@@ -42,13 +41,12 @@ export function AboutSection() {
                 <div className="mb-2 flex items-center gap-4">
                   <div className="h-0.5 w-12 bg-primary"></div>
                   <h3 className="text-2xl font-bold text-primary">
-                    Our Impact
+                    MCAA Impact
                   </h3>
                 </div>
                 <p className="text-lg text-primary">
-                  With over 20,000 alumni worldwide, our network continues to
-                  grow and make positive changes in their communities and
-                  professions.
+                  With over 2 decades worth of alumni worldwide, our network continues to grow yearly to
+                  make positive impacts on our college & the world!
                 </p>
               </div>
             </div>

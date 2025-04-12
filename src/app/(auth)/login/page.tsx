@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { login, AuthResponse } from "../actions";
+import { login, resetPassword, AuthResponse } from "../actions";
 import OauthButton from "@/components/auth/OauthButton";
 
 const registerSchema = z.object({
@@ -35,14 +35,46 @@ export default function Login() {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const onSubmit = async (data: LoginInput) => {
+    setError(null);
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
     const result: AuthResponse = await login(formData);
     if (result.error) {
       setError(result.error);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    setError(null);
+    setSuccess(null);
+    const email = form.getValues("email");
+    
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+
+    try {
+      setIsResetting(true);
+      const formData = new FormData();
+      formData.append("email", email);
+      const result = await resetPassword(formData);
+      
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setSuccess("Password reset instructions have been sent to your email");
+        form.setValue("password", "");
+      }
+    } catch (err) {
+      setError("An error occurred while resetting your password");
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -92,7 +124,17 @@ export default function Login() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#383590]">Password</FormLabel>
+                      <div className="flex items-center justify-between">
+                        <FormLabel className="text-[#383590]">Password</FormLabel>
+                        <button
+                          type="button"
+                          onClick={handleForgotPassword}
+                          className="text-sm text-[#F5BC4C] hover:text-[#F5BC4C]/90"
+                          disabled={isResetting}
+                        >
+                          {isResetting ? "Sending..." : "Forgot Password?"}
+                        </button>
+                      </div>
                       <FormControl>
                         <Input
                           placeholder="Enter your password"
@@ -116,6 +158,13 @@ export default function Login() {
                   <div className="rounded-md border border-red-200 bg-red-50 p-3">
                     <p className="text-center text-sm font-medium text-red-800">
                       {error}
+                    </p>
+                  </div>
+                )}
+                {success && (
+                  <div className="rounded-md border border-green-200 bg-green-50 p-3">
+                    <p className="text-center text-sm font-medium text-green-800">
+                      {success}
                     </p>
                   </div>
                 )}
