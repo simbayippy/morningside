@@ -50,7 +50,7 @@ export function AdminControls({ eventId }: { eventId: string }) {
     <>
       {deleteEvent.isPending && <LoadingOverlay />}
       <div className="mt-6 flex gap-4">
-        <Link href={`/events/${eventId}/edit`}>
+        <Link href={`/admin/edit/events/${eventId}`}>
           <Button variant="outline" className="gap-2">
             <Pencil className="h-4 w-4" />
             Edit Event
