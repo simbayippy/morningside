@@ -18,7 +18,7 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import type { Event } from "@prisma/client";
 import { Calendar, Image as ImageIcon, MapPin, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, convertUTCtoHKT } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
@@ -58,7 +58,7 @@ export function EventForm({
           title: initialData.title,
           description: initialData.description,
           date: initialData.date
-            ? new Date(initialData.date).toISOString()
+            ? convertUTCtoHKT(initialData.date).toISOString()
             : "",
           location: initialData.location,
           price: String(initialData.price),

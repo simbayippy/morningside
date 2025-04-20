@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { type Event } from "@prisma/client";
 import { ArrowUpRight } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface PastEventsProps {
   events: Event[];
@@ -46,11 +47,7 @@ export function PastEvents({ events }: PastEventsProps) {
                 {event.title}
               </h3>
               <p className="text-sm text-[#383590]/70">
-                {new Date(event.date).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
+                {formatDate(event.date)}
               </p>
               <p className="text-sm text-[#383590]/70">{event.location}</p>
             </div>

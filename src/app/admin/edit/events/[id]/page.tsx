@@ -11,6 +11,7 @@ import { uploadFile } from "@/lib/upload";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
+import { preserveHKTDate } from "@/lib/utils";
 
 interface EditEventPageProps {
   params: Promise<{
@@ -45,13 +46,16 @@ export default function EditEventPage({ params }: EditEventPageProps) {
         imageUrl = uploadResult.url;
       }
 
+      // Preserve the HKT date when converting to UTC for storage
+      const adjustedDate = preserveHKTDate(values.date);
+
       updateEvent.mutate({
         id,
         data: {
           ...values,
           price: Number(values.price),
           capacity: values.capacity ? Number(values.capacity) : undefined,
-          date: new Date(values.date),
+          date: adjustedDate,
           imageUrl: imageUrl as string,
         },
       });
@@ -90,6 +94,8 @@ export default function EditEventPage({ params }: EditEventPageProps) {
       </div>
     );
   }
+
+  console.log("data of event", event);
 
   if (!event) {
     return (

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { type Event } from "@prisma/client";
 import { MapPin, Calendar, Clock } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface ClosestEventProps {
   event: Event;
@@ -50,19 +51,11 @@ export function ClosestEvent({ event }: ClosestEventProps) {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-lg text-[#383590]">
                 <Calendar className="h-5 w-5 text-[#F5BC4C]" />
-                {new Date(event.date).toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
+                {formatDate(event.date)}
               </div>
               <div className="flex items-center gap-2 text-lg text-[#383590]">
                 <Clock className="h-5 w-5 text-[#F5BC4C]" />
-                {new Date(event.date).toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true,
-                })}
+                {formatDate(event.date, "TIME")}
                 {" - end"}
               </div>
             </div>

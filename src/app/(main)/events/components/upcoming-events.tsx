@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type Event } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import { MapPin, Calendar } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface UpcomingEventsProps {
   events: Event[];
@@ -52,19 +53,10 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
               <Calendar className="h-4 w-4 text-[#F5BC4C]" />
               <div>
                 <div>
-                  {new Date(event.date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  {formatDate(event.date)}
                 </div>
                 <div>
-                  {new Date(event.date).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
-                    hour12: true,
-                  })}{" "}
-                  - end
+                  {formatDate(event.date, "TIME")} - end
                 </div>
               </div>
             </div>

@@ -10,6 +10,7 @@ import {
 import { uploadFile } from "@/lib/upload";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { preserveHKTDate } from "@/lib/utils";
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -35,11 +36,14 @@ export default function CreateEventPage() {
         imageUrl = uploadResult.url;
       }
 
+      // Preserve the HKT date when converting to UTC for storage
+      const adjustedDate = preserveHKTDate(values.date);
+
       createEvent.mutate({
         ...values,
         price: Number(values.price),
         capacity: values.capacity ? Number(values.capacity) : undefined,
-        date: new Date(values.date),
+        date: adjustedDate,
         imageUrl: imageUrl as string,
       });
     } catch (error) {
