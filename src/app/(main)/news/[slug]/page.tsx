@@ -74,23 +74,6 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
             <time dateTime={article.publishedAt.toISOString()}>
               {formatDate(article.publishedAt)}
             </time>
-            {article.author.name && (
-              <>
-                <span>•</span>
-                <div className="flex items-center gap-2">
-                  {article.author.image && (
-                    <Image
-                      src={article.author.image}
-                      alt={article.author.name}
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                  )}
-                  <span>{article.author.name}</span>
-                </div>
-              </>
-            )}
           </div>
         </header>
 
