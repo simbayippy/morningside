@@ -16,13 +16,13 @@ export function ClosestEvent({ event }: ClosestEventProps) {
         <Link
           href={`/events/${event.id}`}
           className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100 lg:aspect-[3/3]"
-        >
+          >
           {event.imageUrl ? (
             <Image
               src={event.imageUrl}
               alt={event.title}
               fill
-              className="object-cover transition duration-300 group-hover:scale-105"
+              className="object-contain transition duration-300 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full items-center justify-center text-gray-400">
