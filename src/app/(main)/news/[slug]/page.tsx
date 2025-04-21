@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/trpc/server";
-import { formatDate } from "@/lib/utils";
+import { formatDateNoTime } from "@/lib/utils";
 import { isUserAdmin } from "@/lib/auth";
 import { AdminControls } from "./admin-controls";
 import {
@@ -72,7 +72,7 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
           <h1 className="text-4xl font-bold text-[#383590]">{article.title}</h1>
           <div className="mt-4 flex items-center gap-4 text-sm text-[#383590]/70">
             <time dateTime={article.publishedAt.toISOString()}>
-              {formatDate(article.publishedAt)}
+              {formatDateNoTime(article.publishedAt)}
             </time>
           </div>
         </header>
