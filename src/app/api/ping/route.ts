@@ -6,23 +6,23 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     // Create a ping record
-    const pingRecord = await db.pingRecord.create({
+    await db.pingRecord.create({
       data: {
         message: "Ping to keep Supabase alive via REST API",
       },
     });
 
-    // Delete the ping record immediately
-    await db.pingRecord.delete({
-      where: {
-        id: pingRecord.id,
-      },
-    });
+    // // Delete the ping record immediately
+    // await db.pingRecord.delete({
+    //   where: {
+    //     id: pingRecord.id,
+    //   },
+    // });
 
     return NextResponse.json({
       success: true,
       timestamp: new Date(),
-      message: "Ping successful - created and deleted record to keep Supabase active",
+      message: "Ping successful - created record to keep Supabase active",
     });
   } catch (error) {
     console.error("Error in ping endpoint:", error);
