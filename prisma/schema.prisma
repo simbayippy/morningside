@@ -158,3 +158,9 @@ model PaymentSettings {
 
   @@index([lastUpdatedBy])
 }
+
+model PingRecord {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  message   String?
+}
