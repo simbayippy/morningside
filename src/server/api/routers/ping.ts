@@ -5,6 +5,8 @@ import { Prisma } from "@prisma/client";
 
 export const pingRouter = createTRPCRouter({
   // Public ping endpoint that can be called by a cron job
+  // Reason: supabase sleeps database after 7 days of inactivity. this endpoint prevents that.
+  // currently I have 1 scheduled by using crontap.com
   ping: publicProcedure
     .input(
       z.object({
