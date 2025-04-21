@@ -31,8 +31,6 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
   const getTimeValues = () => {
     if (!value) return { hours: "12", minutes: "00", period: "PM" };
 
-    console.log(value);
-    
     const hours = value.getHours();
     const minutes = value.getMinutes();
     
