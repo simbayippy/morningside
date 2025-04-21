@@ -33,6 +33,7 @@ model User {
   // Relations
   registrations EventRegistration[]
   newsArticles  News[]              @relation("Author")
+  paymentSettings PaymentSettings[] @relation("PaymentSettingsUpdater")
 }
 
 model Member {
@@ -139,4 +140,21 @@ model News {
   @@index([publishedAt])
   @@index([authorId])
   @@index([featured])
+}
+
+model PaymentSettings {
+  id              String   @id @default(cuid())
+  bankName        String?
+  accountName     String?
+  accountNumber   String?
+  bankCode        String?
+  additionalInfo  String?  @db.Text
+  lastUpdatedBy   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  updatedByUser   User     @relation("PaymentSettingsUpdater", fields: [lastUpdatedBy], references: [id])
+
+  @@index([lastUpdatedBy])
 }

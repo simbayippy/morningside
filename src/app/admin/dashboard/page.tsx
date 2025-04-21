@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Users, PlusCircle, Shield, Calendar } from "lucide-react";
+import { Loader2, Users, PlusCircle, Shield, Calendar, CreditCard } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboardPage() {
@@ -129,6 +129,31 @@ export default function AdminDashboardPage() {
                     {currentUser.isSuperAdmin
                       ? "Manage admin access"
                       : "View users"}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Payment Settings Card */}
+          <Link href="/admin/payment-settings" className="block h-full">
+            <Card className="h-full transition-all hover:shadow-lg">
+              <CardHeader>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
+                  <CreditCard className="h-6 w-6 text-red-600" />
+                </div>
+                <CardTitle>Payment Settings</CardTitle>
+                <p className="text-sm text-gray-600">
+                  Manage bank account details for payments
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div>
+                  <p className="text-2xl font-bold text-red-600">
+                    Bank Details
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Update payment information
                   </p>
                 </div>
               </CardContent>

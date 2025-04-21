@@ -9,8 +9,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
+import { api } from "@/trpc/react";
 
 interface PaymentInstructionsDialogProps {
   trigger?: React.ReactNode;
@@ -19,6 +19,9 @@ interface PaymentInstructionsDialogProps {
 export function PaymentInstructionsDialog({
   trigger,
 }: PaymentInstructionsDialogProps) {
+  // Fetch payment settings
+  const { data: paymentSettings, isLoading } = api.payment.getPaymentSettings.useQuery();
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,39 +36,40 @@ export function PaymentInstructionsDialog({
         <DialogHeader>
           <DialogTitle>Payment Instructions</DialogTitle>
           <DialogDescription>
-            Please choose your preferred payment method and follow the instructions below.
+            Please follow the bank transfer instructions below.
           </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="payme" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="payme">PayMe</TabsTrigger>
-            <TabsTrigger value="bank">Bank Transfer</TabsTrigger>
-          </TabsList>
-          <TabsContent value="payme" className="space-y-4">
-            <div className="rounded-lg border p-4">
-              <h4 className="mb-2 font-medium">PayMe Instructions</h4>
-              <ol className="ml-4 list-decimal space-y-2 text-sm text-muted-foreground">
-                <li>Open your PayMe app</li>
-                <li>Scan the QR code or search for our PayMe ID: [Your PayMe ID]</li>
-                <li>Enter the exact amount for your membership type</li>
-                <li>Include your full name in the payment note</li>
-                <li>Take a screenshot of the successful payment</li>
-              </ol>
-            </div>
-          </TabsContent>
-          <TabsContent value="bank" className="space-y-4">
+        
+        {isLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          </div>
+        ) : (
+          <div className="space-y-4">
             <div className="rounded-lg border p-4">
               <h4 className="mb-2 font-medium">Bank Transfer Details</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <p><strong>Bank:</strong> [Bank Name]</p>
-                <p><strong>Account Name:</strong> Morningside College Alumni Association</p>
-                <p><strong>Account Number:</strong> [Account Number]</p>
-                <p><strong>Bank Code:</strong> [Bank Code]</p>
-                <p className="mt-4">Please include your full name as the payment reference.</p>
+                <p><strong>Bank:</strong> {paymentSettings?.bankName ?? "[Bank details not configured]"}</p>
+                <p><strong>Account Name:</strong> {paymentSettings?.accountName ?? "Morningside College Alumni Association"}</p>
+                <p><strong>Account Number:</strong> {paymentSettings?.accountNumber ?? "[Account details not configured]"}</p>
+                <p><strong>Bank Code:</strong> {paymentSettings?.bankCode ?? "[Bank code not configured]"}</p>
+                {paymentSettings?.additionalInfo && (
+                  <div className="mt-4 rounded-md bg-amber-50 p-3 text-amber-800">
+                    <p className="font-medium">Additional Instructions:</p>
+                    <p>{paymentSettings.additionalInfo}</p>
+                  </div>
+                )}
               </div>
             </div>
-          </TabsContent>
-        </Tabs>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <h4 className="mb-2 font-medium text-amber-800">Important</h4>
+              <ul className="ml-4 list-disc space-y-2 text-sm text-amber-800">
+                <li>Make sure to take a screenshot of your successful payment</li>
+                <li>You will need to upload this as proof of payment</li>
+              </ul>
+            </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
