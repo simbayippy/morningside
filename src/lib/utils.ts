@@ -45,6 +45,18 @@ export function formatDate(date: Date, format?: string): string {
   }).format(date);
 }
 
+export function formatDateNoTime(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: 'Asia/Hong_Kong',
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  };
+
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}
+
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

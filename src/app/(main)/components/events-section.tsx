@@ -64,6 +64,9 @@ export async function EventsSection() {
                       </Link>
                     </h3>
                     <p className="text-sm text-gray-600">
+                      {formatDate(event.date, "TIME")}
+                    </p>
+                    <p className="text-sm text-gray-600">
                       {event.registrations.length}{" "}
                       {event.registrations.length === 1 ? "person" : "people"}{" "}
                       registered
@@ -112,6 +115,9 @@ export async function EventsSection() {
                         {event.title}
                       </Link>
                     </h3>
+                    <p className="text-sm text-gray-500">
+                      {formatDate(event.date, "TIME")}
+                    </p>
                     <p className="text-sm text-gray-500">
                       {event.registrations.length}{" "}
                       {event.registrations.length === 1 ? "person" : "people"}{" "}

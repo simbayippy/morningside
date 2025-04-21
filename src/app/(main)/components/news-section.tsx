@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/server";
-import { formatDate } from "@/lib/utils";
+import { formatDateNoTime } from "@/lib/utils";
 
 export async function NewsSection() {
   const news = await api.news.getAll();
@@ -34,7 +34,7 @@ export async function NewsSection() {
                 <div className="mb-4 flex items-center">
                   <div className="mr-4 h-1 w-16 bg-primary"></div>
                   <p className="text-gray-600">
-                    {formatDate(item.publishedAt)}
+                    {formatDateNoTime(item.publishedAt)}
                   </p>
                 </div>
 
