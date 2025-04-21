@@ -109,20 +109,6 @@ export default async function NewsPage() {
                         <p className="mt-2 line-clamp-2 text-sm text-[#383590]/70">
                           {article.excerpt}
                         </p>
-                        {article.author.name && (
-                          <p className="mt-4 flex items-center gap-2 text-sm text-[#383590]/70">
-                            {article.author.image && (
-                              <Image
-                                src={article.author.image}
-                                alt={article.author.name}
-                                width={24}
-                                height={24}
-                                className="rounded-full"
-                              />
-                            )}
-                            <span>{article.author.name}</span>
-                          </p>
-                        )}
                       </div>
                     </article>
                   </Link>
