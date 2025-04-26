@@ -92,7 +92,7 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
                       alt={`${article.title} - Image ${index + 1}`}
                       fill
                       priority={index === 0}
-                      className="object-cover"
+                      className="object-contain"
                     />
                   </div>
                 </CarouselItem>
