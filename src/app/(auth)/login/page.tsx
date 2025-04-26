@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -83,7 +84,15 @@ export default function Login() {
       className="flex h-screen overflow-hidden"
       style={{ height: "calc(100vh - 5rem)" }}
     >
-      <div className="hidden h-full grow bg-[#F5BC4C]/10 lg:block" />
+      <div className="hidden h-full grow relative lg:block">
+        <Image
+          src="/loginpage.png"
+          alt="Morningside Alumni Login"
+          fill
+          priority
+          className="object-cover"
+        />
+      </div>
       <div className="h-full w-full bg-background lg:w-1/2">
         <div className="flex h-full items-center justify-center">
           <div className="w-full max-w-md px-8">
