@@ -85,21 +85,22 @@ export default async function NewsArticlePage({ params }: NewsPageProps) {
               {article.imageUrls.map((imageUrl, index) => (
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 <CarouselItem key={index}>
-                  <div className="relative aspect-[2/1] overflow-hidden rounded-lg">
+                  <div className="relative aspect-[2/1] overflow-hidden">
                     <Image
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                       src={imageUrl}
                       alt={`${article.title} - Image ${index + 1}`}
                       fill
                       priority={index === 0}
-                      className="object-contain"
+                      className="object-contain rounded-lg"
+                      style={{ borderRadius: '0.5rem' }}
                     />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="absolute -left-4 md:-left-12" />
-            <CarouselNext className="absolute -right-4 md:-right-12" />
+            <CarouselPrevious className="absolute -left-4 md:-left-12 border-[#F5BC4C] text-[#F5BC4C] hover:bg-[#F5BC4C]/10" />
+            <CarouselNext className="absolute -right-4 md:-right-12 border-[#F5BC4C] text-[#F5BC4C] hover:bg-[#F5BC4C]/10" />
           </Carousel>
         </div>
 
