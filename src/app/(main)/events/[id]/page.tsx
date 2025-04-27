@@ -181,7 +181,7 @@ export default async function EventPage({ params }: EventPageProps) {
               </div>
 
               {/* Registered Users */}
-              <RegisteredUsers registrations={event.registrations} />
+              {/* <RegisteredUsers registrations={event.registrations} /> */}
             </div>
           </div>
         </div>
