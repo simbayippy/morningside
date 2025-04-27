@@ -66,13 +66,13 @@ export async function EventsSection() {
                     <p className="text-sm text-gray-600">
                       {formatDate(event.date, "TIME")}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    {/* <p className="text-sm text-gray-600">
                       {event.registrations.length}{" "}
                       {event.registrations.length === 1 ? "person" : "people"}{" "}
                       registered
                       {event.capacity &&
                         ` • ${event.capacity - event.registrations.length} spots left`}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               ))}
@@ -118,11 +118,11 @@ export async function EventsSection() {
                     <p className="text-sm text-gray-500">
                       {formatDate(event.date, "TIME")}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    {/* <p className="text-sm text-gray-500">
                       {event.registrations.length}{" "}
                       {event.registrations.length === 1 ? "person" : "people"}{" "}
                       attended
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               ))}
